@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Ticket Reservation System | Flight Schedule</title>
+</head>
+<body>
+    <h1>View Public Information</h1>
+    <h2>Flight Schedule</h2>
+    <div>
+        <style type="text/css">
+            table, th, td{
+                border: 1px solid black;
+            }
+        </style>
+        <table>
+            <th>Airline</th>
+            <th>Flight number</th>
+            <th>Arrival date</th>
+            <th>Departure date</th>
+            {% for row in schedule %}
+                <tr>
+                    <td>{{row['airline_name']}}</td>
+                    <td>{{row['flight_num']}}</td>
+                    <td>{{row['arrive_datetime']}}</td>
+                    <td>{{row['dept_datetime']}}</td>
+                </tr>
+            {% endfor %}
+    </div>
+    <p>Can't find your flight?</p>
+    <a href="/searchFlight">Search future flights</a>
+    <a href="/">Go back</a>
+</body>
+</html>
