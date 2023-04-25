@@ -43,7 +43,7 @@ def registerStaff():
 def loginAuthStaff():
 	#grabs information from the forms
 	username = request.form['username']
-	password = request.form['password']
+	password = md5(request.form['password'])
 	#executes query
 	cursor = conn.cursor()
 	query = 'SELECT * FROM airline_staff WHERE username = %s and password = %s'
@@ -68,7 +68,7 @@ def loginAuthStaff():
 def loginAuthCust():
 	#grabs information from the forms
 	username = request.form['username']
-	password = request.form['password']
+	password = md5(request.form['password'])
 	#executes query
 	cursor = conn.cursor()
 	query = 'SELECT * FROM airline_staff WHERE username = %s and password = %s'
@@ -99,7 +99,7 @@ def registerAuthCust():
     passport_country = request.form['passport_country']
     date_of_birth = request.form['date_of_birth']
     email = request.form['email']
-    password = request.form['password']
+    password = md5(request.form['password'])
     phone_num = request.form['phone_num']
     building_num = request.form['building_num']
     street = request.form['street']
@@ -146,7 +146,7 @@ def registerAuthStaff():
     phone_num = request.form['phone_num']
     email = request.form['email']
     username = request.form['username']
-    password = request.form['password']
+    password = md5(request.form['password'])
 
 	#cursor used to send queries
     cursor = conn.cursor()
