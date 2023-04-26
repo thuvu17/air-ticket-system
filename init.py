@@ -181,35 +181,26 @@ def registerAuthStaff():
         return render_template('index.html')
     
 #View public info
-@app.route('/viewPublicInfo')
+@app.route('/viewPublicInfo', method=['GET', 'POST'])
 def viewPublicInfo():
-    #executes query
+    #display first 10 flights
     cursor = conn.cursor()
     query = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime FROM flight ORDER BY dept_datetime'
     cursor.execute(query)
-    #stores all flight status in variable data
-    data = cursor.fetchmany(10) 
-    cursor.close()
-    return render_template('viewPublicInfo.html',schedule=data)
-
-#Search flight
-@app.route('/searchFlight', method=['GET', 'POST'])
-def viewPublicInfo():
+    view = cursor.fetchmany(10) 
+    #request data from user and display searched flight
     source_city = request.form['source_city']
     source_airport = request.form['source_airport']
     dest_city = request.form['dest_city']
     dest_airport = request.form['dest_airport']
     dept_date = request.form['dept_date']
     arrive_date = request.form['arrive_date']
-    #executes query
     cursor = conn.cursor()
-    query = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime FROM flight ORDER BY dept_datetime'
+    query = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime FROM flight ORDER BY dept_datetime'	# TODO: query not done
     cursor.execute(query)
-    #stores the first 10 flights in variable data
-    data = cursor.fetchmany(10) 
+    search = cursor.fetchone()
     cursor.close()
-    #TODO: display data but where? createa another link?
-
+    return render_template('viewPublicInfo.html',schedule=view, search=search)
 
 
 
