@@ -200,7 +200,7 @@ def viewPublicInfo():
     cursor.execute(query)
     search = cursor.fetchone()
     cursor.close()
-    return render_template('viewPublicInfo.html',schedule=view, search=search)
+    return render_template('viewPublicInfo.html',view=view, search=search)
 
 
 
