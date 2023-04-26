@@ -20,7 +20,7 @@
             <th>Flight number</th>
             <th>Arrival date</th>
             <th>Departure date</th>
-            {% for row in schedule %}
+            {% for row in view %}
                 <tr>
                     <td>{{row['airline_name']}}</td>
                     <td>{{row['flight_num']}}</td>
@@ -30,7 +30,54 @@
             {% endfor %}
     </div>
     <p>Can't find your flight?</p>
-    <a href="/searchFlight">Search future flights</a>
+    <h2>Search Flight</h2>
+    <div>
+        <form action="/searchFlight" method="POST">
+            <p>
+                <label for="source_city">Source city</label>
+                <input type="text" name = "source_city" placeholder="" />
+                <label for="source_airport">Source airport</label>
+                <input type="text" name = "source_airport" placeholder="" />
+            </p>
+            <p>
+                <label for="dest_city">Destination city</label>
+                <input type="text" name = "dest_city" placeholder="" />
+                <label for="dest_airport">Destination airport</label>
+                <input type="text" name = "dest_airport" placeholder="" />
+            </p>
+            <p>
+                <label for="dept_date">Departure date</label>
+                <input type="text" name = "dept_date" placeholder="" />
+                <label for="arrive_date">Return date</label>
+                <input type="text" name = "arrive_date" placeholder=""/>
+            </p>
+            <p>
+                <input type="submit" value = Search />
+            </p>
+        </form>
+    </div>
+    <div>
+        {% if search %}
+            <style type="text/css">
+                table, th, td{
+                    border: 1px solid black;
+                }
+            </style>
+            <table>
+                <th>Airline</th>
+                <th>Flight number</th>
+                <th>Arrival date</th>
+                <th>Departure date</th>
+                {% for row in search %}
+                    <tr>
+                        <td>{{row['airline_name']}}</td>
+                        <td>{{row['flight_num']}}</td>
+                        <td>{{row['arrive_datetime']}}</td>
+                        <td>{{row['dept_datetime']}}</td>
+                    </tr>
+                {% endfor %}
+        {% endif %}
+    </div>
     <a href="/">Go back</a>
 </body>
 </html>
