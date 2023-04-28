@@ -1,89 +1,69 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2113.3">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-    span.Apple-tab-span {white-space:pre}
-  </style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Ticket Reservation System | Staff: Create New Flights</title>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="en"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta http-equiv="X-UA-Compatible" content="IE=edge"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Air Ticket Reservation System | Staff: Create New Flights&lt;/title&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1&gt;{{airline_name}}&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Create New Flights&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;form action="/createFlight" method="POST"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="source_city"&gt;Source city&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="text" name = "source_city" placeholder="" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="source_airport"&gt;Source airport&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="text" name = "source_airport" placeholder="" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="dest_city"&gt;Destination city&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="text" name = "dest_city" placeholder="" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="dest_airport"&gt;Destination airport&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="text" name = "dest_airport" placeholder="" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="dept_date"&gt;Departure date&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="text" name = "dept_date" placeholder="" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="arrive_date"&gt;Return date&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="text" name = "arrive_date" placeholder=""/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">             </span>&lt;p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="airplane_id"&gt;Airplane ID&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="text" name = "airplane_id" placeholder="" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;label for="base_price"&gt;Base price&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="text" name = "base_price" placeholder=""/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">                </span>&lt;input type="submit" value = Create /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/form&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;br&gt;</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;h2&gt;Existing Flights For Next 30 Days&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;style type="text/css"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>table, th, td{</p>
-<p class="p1"><span class="Apple-converted-space">                </span>border: 1px solid black;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>}</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;table&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    <span class="Apple-tab-span">	</span></span>&lt;th&gt;Flight Number&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;th&gt;Arrival date&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;th&gt;Arrival Airport&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;th&gt;Departure date&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;th&gt;Departure Airport&lt;/th&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        <span class="Apple-tab-span">	</span></span>&lt;td&gt;{{row['flight_num']}}&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;td&gt;{{row['arrive_datetime']}}&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;td&gt;{{row['arrive_airport']}}&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;td&gt;{{row['dept_datetime']}}&lt;/td&gt;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>&lt;td&gt;{{row['dept_airport']}}&lt;/td&gt; <span class="Apple-converted-space">           </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>&lt;/tr&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/table&gt;</p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;br&gt;</p>
-<p class="p2"><br></p>
-<p class="p2"><span class="Apple-converted-space">    </span></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;a href="/"&gt;Go back&lt;/a&gt;</p>
-<p class="p2"><br></p>
-<p class="p2"><br></p>
-<p class="p2"><br></p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+    <h1>{{airline_name}}</h1>
+    <h2>Create New Flights</h2>
+    <form action="/createFlight" method="POST">
+            <p>
+                <label for="source_city">Source city</label>
+                <input type="text" name = "source_city" placeholder="" />
+                <label for="source_airport">Source airport</label>
+                <input type="text" name = "source_airport" placeholder="" />
+            </p>
+            <p>
+                <label for="dest_city">Destination city</label>
+                <input type="text" name = "dest_city" placeholder="" />
+                <label for="dest_airport">Destination airport</label>
+                <input type="text" name = "dest_airport" placeholder="" />
+            </p>
+            <p>
+                <label for="dept_date">Departure date</label>
+                <input type="text" name = "dept_date" placeholder="" />
+                <label for="arrive_date">Return date</label>
+                <input type="text" name = "arrive_date" placeholder=""/>
+            </p>
+             <p>
+                <label for="airplane_id">Airplane ID</label>
+                <input type="text" name = "airplane_id" placeholder="" />
+                <label for="base_price">Base price</label>
+                <input type="text" name = "base_price" placeholder=""/>
+            </p>
+            <p>
+                <input type="submit" value = Create />
+            </p>
+        </form>
+        <br>
+        
+        <h2>Existing Flights For Next 30 Days</h2>
+        <style type="text/css">
+            table, th, td{
+                border: 1px solid black;
+            }
+    </style>
+    <table>
+    	<th>Flight Number</th>
+        <th>Arrival date</th>
+        <th>Arrival Airport</th>
+        <th>Departure date</th>
+        <th>Departure Airport</th>
+        <tr>
+        	<td>{{row['flight_num']}}</td>
+            <td>{{row['arrive_datetime']}}</td>
+            <td>{{row['arrive_airport']}}</td>
+            <td>{{row['dept_datetime']}}</td>
+            <td>{{row['dept_airport']}}</td>            
+        </tr>
+    </table>
+    
+    <br>
+    
+    <a href="/">Go back</a>
+  
 </body>
 </html>
