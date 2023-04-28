@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Ticket Reservation System | Staff: Add Airport</title>
+</head>
+<body>
+    <h1>{{airline_name}}</h1>
+    <h2>Add Airport</h2>
+    <form action="/addAirport" method="POST">
+    </form>
+    <p>
+    	<label for="airport_code">Airplane Code</label>
+        <input type="text" name = "airport_code" placeholder="" />
+        <label for="NAME">Name</label>
+        <input type="text" name = "NAME" placeholder="" />
+    </p>
+    <p>
+    	<label for="city">City</label>
+        <input type="text" name = "city" placeholder="" />
+        <label for="type">Type</label>
+        <select id="type">
+          <option value="domestic">Domestic</option>
+          <option value="international">International</option>
+          <option value="both">Both</option>
+          <option value="null" selected></option>
+        </select>
+
+
+    </p>
+            
+            
+    <input type="submit" value = Add />
+    
+    <br>
+    <br>
+    
+    <a href="/">Go back</a>
+
+</body>
+</html>
+
