@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Ticket Reservation System | Staff: Create New Flights</title>
+</head>
+<body>
+    <h1>{{airline_name}}</h1>
+    <h2>Change Status of Flights</h2>
+    <form action="/changeStatus" method="POST">
+    </form>
+        
+        <h3>Existing Flights For Next 30 Days</h3>
+        <style type="text/css">
+            table, th, td{
+                border: 1px solid black;
+            }
+    </style>
+    <table>
+    	<th>Flight Number</th>
+        <th>Status</th>
+        <th>Arrival date</th>
+        <th>Arrival Airport</th>
+        <th>Departure date</th>
+        <th>Departure Airport</th>
+        <tr>
+        	<td>{{row['flight_num']}}</td>
+            
+            
+            <td><label for="status"></label>
+
+            <select id="status">
+              <option value="on_time">On_time</option>
+              <option value="delay">Delay</option>
+              <option value="cancel">Cancel</option>
+              <option value="no_change" selected>{{row['status']}}</option>
+            </select></td>
+            
+            
+            <td>{{row['arrive_datetime']}}</td>
+            <td>{{row['arrive_airport']}}</td>
+            <td>{{row['dept_datetime']}}</td>
+            <td>{{row['dept_airport']}}</td>
+        </tr>
+    </table>
+    <br>
+            
+            
+    <input type="submit" value = Change />
+    
+    <br>
+    <br>
+    
+    <a href="/">Go back</a>
+
+</body>
+</html>
+
