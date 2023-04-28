@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Ticket Reservation System | Staff: Create New Flights</title>
+</head>
+<body>
+    <h1>{{airline_name}}</h1>
+    <h2>Add Airplane</h2>
+    <form action="/addAirplane" method="POST">
+    </form>
+    <p>
+    	<label for="airplane_id">Airplane ID</label>
+        <input type="text" name = "airplane_id" placeholder="" />
+        <label for="seats">Seats</label>
+        <input type="text" name = "seats" placeholder="" />
+    </p>
+    <p>
+    	<label for="company">Company</label>
+        <input type="text" name = "company" placeholder="" />
+        <label for="menu_date">Manufactured Date</label>
+        <input type="text" name = "menu_date" placeholder="" />
+    </p>
+            
+            
+    <input type="submit" value = Add />
+    
+    <br>
+    <br>
+    
+    <a href="/">Go back</a>
+
+</body>
+</html>
+
