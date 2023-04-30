@@ -253,8 +253,12 @@ def homeCust():
     query = 'SELECT first_name FROM airline_staff WHERE username = %s'
     cursor.execute(query, (username))
     first_name = cursor.fetchone()
+    # display flights in the next 30 days
+    # TODO: query get flight_num, dept and arrival city/airport/datetime, status within 30 days
+    cursor.execute(query, (username))
+    flights = cursor.fetchall()
     cursor.close()
-    return render_template('homeStaff.html', first_name=first_name)
+    return render_template('homeStaff.html', first_name=first_name, flights=flights)
 
 # Staff add airplane
 @app.route('/staffAddAirplane', method=['GET', 'POST'])
