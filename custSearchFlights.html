@@ -88,7 +88,8 @@
                     <td>{{row['dept_datetime']}}</td>
                     <td>{{row['arrive_datetime']}}</td>
                     <td>{{row['availability']}}</td>
-                    <td>{% if row['availability'] > 0 %}
+                    <td>
+                        {% if row['availability'] > 0 %}
                             <form action="/purchase" method="POST">
                                 <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
                                 <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
@@ -132,7 +133,8 @@
                     <td>{{row['dept_datetime']}}</td>
                     <td>{{row['arrive_datetime']}}</td>
                     <td>{{row['availability']}}</td>
-                    <td>{% if row['availability'] > 0 %}
+                    <td>
+                        {% if row['availability'] > 0 %}
                             <form action="/purchase" method="POST">
                                 <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
                                 <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
@@ -176,7 +178,8 @@
                     <td>{{row['dept_datetime']}}</td>
                     <td>{{row['arrive_datetime']}}</td>
                     <td>{{row['availability']}}</td>
-                    <td>{% if row['availability'] > 0 %}
+                    <td>
+                        {% if row['availability'] > 0 %}
                             <form action="/purchase" method="POST">
                                 <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
                                 <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
