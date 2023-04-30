@@ -118,7 +118,7 @@ def registerAuthCust():
     data = cursor.fetchone()
 	#use fetchall() if you are expecting more than 1 data row
     error = None
-    if(data):
+    if data:
 		#If the previous query returns data, then account exists
         error = "This account already exists"
         return render_template('register.html', error = error)
@@ -216,8 +216,8 @@ def homeCust():
     first_name = cursor.fetchone()
     # VIEW MY FLIGHTS
     # TODO: query that displays all upcoming flights of customer
-    query = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime FROM flight ORDER BY dept_datetime'
-    cursor.execute(query, (email))
+    getFlights = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime FROM flight ORDER BY dept_datetime'
+    cursor.execute(getFlights, (email))
     my_flights = cursor.fetchall()
     # SEARCH FLIGHTS
     #request data from user and display searched flight
@@ -257,7 +257,8 @@ def homeStaff():
     first_name = cursor.fetchone()
     # display flights in the next 30 days
     # TODO: query get flight_num, dept and arrival city/airport/datetime, status within 30 days
-    cursor.execute(query, (username))
+    getFlights = 'SELECT first_name FROM airline_staff WHERE username = %s'
+    cursor.execute(getFlights, (username))
     flights = cursor.fetchall()
     cursor.close()
     return render_template('homeStaff.html', first_name=first_name, flights=flights)
@@ -271,16 +272,28 @@ def staffAddAirplane():
     query = 'SELECT airline_name FROM airline_staff WHERE username = %s'
     cursor.execute(query, (username))
     airline_name = cursor.fetchone()
-   # request airplane info for adding
+    # get airplane info for adding
     plane_id = request.form['plane_id']
     seats = request.form['seats']
     company = request.form['company']
     manu_date = request.form['manu_date']
-    query = 'INSERT INTO airplane VALUES (%s, %s, %s, %s)'
-    cursor.execute(query, (airline_name, plane_id, seats, company, manu_date))
-    conn.commit()
-    cursor.close()
-    return redirect(url_for('addAirplaneConfirm'))  #  redirect to confirmation page
+	# check if airplane is already in the system
+    query = 'SELECT airline_name, plane_id FROM airplane WHERE airline_name = %s, plane_id = %s'
+    cursor.execute(query, (airline_name, plane_id))
+	#stores the results in a variable
+    data = cursor.fetchone()
+    error = None
+    if data:
+		# If the previous query returns data, then airplane exists
+        error = "This airplane already exists"
+        return render_template('staffAddAirplane.html', error = error)
+    else:
+        ins = 'INSERT INTO airplane VALUES (%s, %s, %s, %s)'
+        cursor.execute(ins, (airline_name, plane_id, seats, company, manu_date))
+        conn.commit()
+        cursor.close()
+        return redirect(url_for('addAirplaneConfirm'))  #  redirect to confirmation page
+  
 
 # TODO: add airplane conformation page: see all the airplanes owned by the airline
 
@@ -297,8 +310,8 @@ def staffChangeStatus():
     newStatus = request.form['newStatus']
     flight_num = request.form['flight_num']
     dept_datetime = request.form['dept_datetime']
-    query = 'UPDATE flight SET status = %s WHERE airline_name = %s and flight_num = %s and dept_datetime = %s'
-    cursor.execute(query, (newStatus, airline_name, flight_num, dept_datetime))
+    edit = 'UPDATE flight SET status = %s WHERE airline_name = %s and flight_num = %s and dept_datetime = %s'
+    cursor.execute(edit, (newStatus, airline_name, flight_num, dept_datetime))
     conn.commit()
     cursor.close()
     return redirect(url_for('homeStaff'))
