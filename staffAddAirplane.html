@@ -9,22 +9,23 @@
 <body>
     <h1>Add Airplane</h1>
     <form action="/staffAddAirplane" method="POST">
+        <p>
+            <label for="plane_id">Airplane ID</label>
+            <input type="text" name = "plane_id" placeholder="" />
+            <label for="seats">Seats</label>
+            <input type="text" name = "seats" placeholder="" />
+        </p>
+        <p>
+            <label for="company">Company</label>
+            <input type="text" name = "company" placeholder="" />
+            <label for="manu_date">Manufactured Date</label>
+            <input type="text" name = "manu_date" placeholder="" />
+        </p>           
+        <input type="submit" value = Add />
+        {% if error %}
+		    <p class="error"><strong>Error:</strong> {{error}}</p>
+	    {% endif %}
     </form>
-    <p>
-    	<label for="plane_id">Airplane ID</label>
-        <input type="text" name = "plane_id" placeholder="" />
-        <label for="seats">Seats</label>
-        <input type="text" name = "seats" placeholder="" />
-    </p>
-    <p>
-    	<label for="company">Company</label>
-        <input type="text" name = "company" placeholder="" />
-        <label for="manu_date">Manufactured Date</label>
-        <input type="text" name = "manu_date" placeholder="" />
-    </p>
-            
-            
-    <input type="submit" value = Add />
     
     <br>
     <br>
