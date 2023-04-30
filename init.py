@@ -263,7 +263,7 @@ def homeStaff():
     return render_template('homeStaff.html', first_name=first_name, flights=flights)
 
 # Staff add airplane
-@app.route('/staffAddAirplane', method=['GET', 'POST'])
+@app.route('/staffAddAirplane', method=['GET'])
 def staffAddAirplane():
     username = session['username']
     cursor = conn.cursor()
@@ -278,8 +278,27 @@ def staffAddAirplane():
     manu_date = request.form['manu_date']
     query = 'INSERT INTO airplane VALUES (%s, %s, %s, %s)'
     cursor.execute(query, (airline_name, plane_id, seats, company, manu_date))
+    conn.commit()
     cursor.close()
     return redirect(url_for('addAirplaneConfirm'))  #  redirect to confirmation page
 
 # TODO: add airplane conformation page: see all the airplanes owned by the airline
 
+# Staff change status
+@app.route('/staffChangeStatus', method=['GET'])
+def staffChangeStatus():
+    username = session['username']
+    cursor = conn.cursor()
+    # get airline name
+    query = 'SELECT airline_name FROM airline_staff WHERE username = %s'
+    cursor.execute(query, (username))
+    airline_name = cursor.fetchone()
+   # request airplane info for changing status
+    newStatus = request.form['newStatus']
+    flight_num = request.form['flight_num']
+    dept_datetime = request.form['dept_datetime']
+    query = 'UPDATE flight SET status = %s WHERE airline_name = %s and flight_num = %s and dept_datetime = %s'
+    cursor.execute(query, (newStatus, airline_name, flight_num, dept_datetime))
+    conn.commit()
+    cursor.close()
+    return redirect(url_for('homeStaff'))
