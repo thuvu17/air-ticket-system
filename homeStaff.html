@@ -7,9 +7,36 @@
     <title>Air Ticket Reservation System | Airline Staff Home Page</title>
 </head>
 <body>
-    <h1>Welcome {{username}}</h1>
-    <h2>Menu</h2>
-    <p><a href="/">View Future Flights</a></p>
+    <h1>Welcome {{first_name}}</h1>
+    <h2>My Upcoming Flights</h2>
+    <div>
+        <style type="text/css">
+            table, th, td{
+                border: 1px solid black;
+            }
+        </style>
+        <table>
+            <th>Flight number</th>
+            <th>Origin city</th>
+            <th>Origin airport</th>
+            <th>Departure date</th>
+            <th>Destination city</th>
+            <th>Destination airport</th>
+            <th>Arrival date</th>
+            <th>Status</th>
+            {% for row in view %}
+                <tr>
+                    <td>{{row['flight_num']}}</td>
+                    <td>{{row['dept_city']}}</td>
+                    <td>{{row['dept_airport']}}</td>
+                    <td>{{row['dept_datetime']}}</td>
+                    <td>{{row['arrive_city']}}</td>
+                    <td>{{row['arrive_airport']}}</td>
+                    <td>{{row['arrive_datetime']}}</td>
+                    td>{{row['status']}}</td>
+                </tr>
+            {% endfor %}
+    </div>
 	<p><a href="/">Create New Flights</a></p>
     <p><a href="/">Change Status of Flights</a></p>
     <p><a href="/">Add Airplane</a></p>
@@ -19,7 +46,7 @@
     <p><a href="/">View Reports</a></p>
     <p><a href="/">View Earned Revenue</a></p>
     <br>
-    <p><a href="/">Logout</a></p>
+    <p><a href="/logoutStaff">Logout</a></p>
     
     
 </body>

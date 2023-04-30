@@ -244,7 +244,17 @@ def purchase():
 
 # ------------------------------------------------------------
 # STAFF USE CASES
-# TODO: staff home page
+# Staff homepage
+@app.route('/homeCust', method=['GET', 'POST'])
+def homeCust():
+    username = session['username']
+    cursor = conn.cursor()
+    # get first name for welcome message
+    query = 'SELECT first_name FROM airline_staff WHERE username = %s'
+    cursor.execute(query, (username))
+    first_name = cursor.fetchone()
+    cursor.close()
+    return render_template('homeStaff.html', first_name=first_name)
 
 # Staff add airplane
 @app.route('/staffAddAirplane', method=['GET', 'POST'])
@@ -264,3 +274,6 @@ def staffAddAirplane():
     cursor.execute(query, (airline_name, plane_id, seats, company, manu_date))
     cursor.close()
     return redirect(url_for('addAirplaneConfirm'))  #  redirect to confirmation page
+
+# TODO: add airplane conformation page: see all the airplanes owned by the airline
+
