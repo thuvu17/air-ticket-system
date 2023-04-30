@@ -264,7 +264,7 @@ def custSearchFlights():
 
 
 # TODO
-@app.route('/purchase', method=['GET'])
+@app.route('/purchase', methods=['GET', 'POST'])
 def purchase():
     cursor = conn.cursor()
     airline_name = request.form['airline_name']
@@ -341,6 +341,7 @@ def addAirplaneConfirm():
     cursor.close()
     return render_template('addAirplaneConfirm.html', airline_name=airline_name, planes=planes)
 
+
 # Staff change status
 @app.route('/staffChangeStatus', methods=['GET', 'POST'])
 def staffChangeStatus():
@@ -359,6 +360,7 @@ def staffChangeStatus():
     conn.commit()
     cursor.close()
     return redirect(url_for('homeStaff'))
+
 
 # Staff add airport
 @app.route('/staffAddAirport', methods=['GET', 'POST'])
