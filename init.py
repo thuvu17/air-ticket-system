@@ -36,8 +36,10 @@ def registerCust():
 @app.route('/registerStaff')
 def registerStaff():
 	return render_template('registerStaff.html')
-
-
+# ------------------------------------------------------------
+# HOMEPAGE WHEN NOT LOGGED IN 
+# ---------------------------
+# LOGIN
 #Authenticates the login for staff
 @app.route('/loginAuthStaff', methods=['GET', 'POST'])
 def loginAuthStaff():
@@ -56,7 +58,7 @@ def loginAuthStaff():
 		#creates a session for the the user
 		#session is a built in
 		session['username'] = username
-		return redirect(url_for('home'))
+		return redirect(url_for('homeStaff'))
 	else:
 		#returns an error message to the html page
 		error = 'Invalid username or password'
@@ -67,27 +69,26 @@ def loginAuthStaff():
 @app.route('/loginAuthCust', methods=['GET', 'POST'])
 def loginAuthCust():
 	#grabs information from the forms
-	username = request.form['username']
+	email = request.form['email']
 	password = request.form['password']
 	#executes query
 	cursor = conn.cursor()
-	query = 'SELECT * FROM airline_staff WHERE username = %s and password = %s'
-	cursor.execute(query, (username, password))
+	query = 'SELECT * FROM customer WHERE email = %s and password = %s'
+	cursor.execute(query, (email, password))
 	#stores the results in a variable
 	data = cursor.fetchone()
 	cursor.close()
 	error = None
 	if(data):
 		#creates a session for the the user
-		#session is a built in
-		session['username'] = username
-		return redirect(url_for('home'))
+		session['email'] = email
+		return redirect(url_for('homeCust'))
 	else:
 		#returns an error message to the html page
-		error = 'Invalid username or password'
+		error = 'Invalid email or password'
 		return render_template('loginCust.html', error=error)
-
-
+# ------------------------------------------------------------
+# REGISTER
 #Authenticates customer register
 @app.route('/registerAuthCust', methods=['GET', 'POST'])
 def registerAuthCust():
@@ -179,8 +180,8 @@ def registerAuthStaff():
             conn.commit()
         cursor.close()
         return render_template('index.html')
-    
-#View public info
+   
+# VIEW PUBLIC INFO
 @app.route('/viewPublicInfo', method=['GET', 'POST'])
 def viewPublicInfo():
     #display first 10 flights
@@ -195,13 +196,71 @@ def viewPublicInfo():
     dest_airport = request.form['dest_airport']
     dept_date = request.form['dept_date']
     arrive_date = request.form['arrive_date']
-    cursor = conn.cursor()
-    query = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime FROM flight ORDER BY dept_datetime'	# TODO: query not done
-    cursor.execute(query)
+    # TODO: query not done
+    query = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime FROM flight ORDER BY dept_datetime'	
+    cursor.execute(query, (source_city, source_airport, dest_city, dest_airport, dept_date, arrive_date))
     search = cursor.fetchone()
     cursor.close()
     return render_template('viewPublicInfo.html',view=view, search=search)
 
+# ------------------------------------------------------------
+# CUSTOMER USE CASES
+# Customer homepage
+@app.route('/homeCust', method=['GET', 'POST'])
+def homeCust():
+    email = session['email']
+    cursor = conn.cursor()
+    # GET FIRST NAME FOR WELCOME MESSAGE
+    query = 'SELECT first_name FROM customer WHERE email = %s'
+    cursor.execute(query, (email))
+    first_name = cursor.fetchone()
+    # VIEW MY FLIGHTS
+    # TODO: query that displays all upcoming flights of customer
+    query = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime FROM flight ORDER BY dept_datetime'
+    cursor.execute(query, (source_city, source_airport, dest_city, dest_airport, dept_date, arrive_date))
+    my_flights = cursor.fetchall()
+    # SEARCH FLIGHTS
+    #request data from user and display searched flight
+    source_city = request.form['source_city']
+    source_airport = request.form['source_airport']
+    dest_city = request.form['dest_city']
+    dest_airport = request.form['dest_airport']
+    dept_date = request.form['dept_date']
+    arrive_date = request.form['arrive_date']
+    # TODO: query include airline, flight num, arr and dept date, base price, availability = seats - count(ticket)
+    query = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime, base_price FROM flight ORDER BY dept_datetime'
+    cursor.execute(query, (source_city, source_airport, dest_city, dest_airport, dept_date, arrive_date))
+    search = cursor.fetchall()
+    cursor.close()
+    return render_template('homeCust.html', first_name=first_name, my_flights=my_flights, search=search)
 
+@app.route('/purchase', method=['GET'])
+def purchase():
+    cursor = conn.cursor()
+    airline_name = request.form['airline_name']
+    flight_num = request.form['flight_num']
+    dept_daetetime = request.form['dept_datetime']
+    # TODO: query to decrement number of availability
 
+# ------------------------------------------------------------
+# STAFF USE CASES
+# TODO: staff home page
 
+# Staff add airplane
+@app.route('/staffAddAirplane', method=['GET', 'POST'])
+def staffAddAirplane():
+    username = session['username']
+    cursor = conn.cursor()
+    # get airline name
+    query = 'SELECT airline_name FROM airline_staff WHERE username = %s'
+    cursor.execute(query, (username))
+    airline_name = cursor.fetchone()
+   # request airplane info for adding
+    plane_id = request.form['plane_id']
+    seats = request.form['seats']
+    company = request.form['company']
+    manu_date = request.form['manu_date']
+    query = 'INSERT INTO airplane VALUES (%s, %s, %s, %s)'
+    cursor.execute(query, (airline_name, plane_id, seats, company, manu_date))
+    cursor.close()
+    return redirect(url_for('addAirplaneConfirm'))  #  redirect to confirmation page
