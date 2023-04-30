@@ -234,6 +234,7 @@ def homeCust():
     cursor.close()
     return render_template('homeCust.html', first_name=first_name, my_flights=my_flights, search=search)
 
+# TODO
 @app.route('/purchase', method=['GET'])
 def purchase():
     cursor = conn.cursor()
@@ -247,7 +248,7 @@ def purchase():
 # ------------------------------------------------------------
 # STAFF USE CASES
 # Staff homepage
-@app.route('/homeStaff', method=['GET', 'POST'])
+@app.route('/homeStaff')
 def homeStaff():
     username = session['username']
     cursor = conn.cursor()
@@ -264,7 +265,7 @@ def homeStaff():
     return render_template('homeStaff.html', first_name=first_name, flights=flights)
 
 # Staff add airplane
-@app.route('/staffAddAirplane', method=['GET'])
+@app.route('/staffAddAirplane', methods=['GET', 'POST'])
 def staffAddAirplane():
     username = session['username']
     cursor = conn.cursor()
@@ -312,7 +313,7 @@ def addAirplaneConfirm():
     return render_template('addAirplaneConfirm.html', airline_name=airline_name, planes=planes)
 
 # Staff change status
-@app.route('/staffChangeStatus', method=['GET'])
+@app.route('/staffChangeStatus', methods=['GET', 'POST'])
 def staffChangeStatus():
     username = session['username']
     cursor = conn.cursor()
@@ -331,7 +332,7 @@ def staffChangeStatus():
     return redirect(url_for('homeStaff'))
 
 # Staff add airport
-@app.route('/staffAddAirport', method=['GET'])
+@app.route('/staffAddAirport', methods=['GET', 'POST'])
 def staffAddAirport():
     username = session['username']
     cursor = conn.cursor()
