@@ -33,12 +33,24 @@
                     <td>{{row['arrive_city']}}</td>
                     <td>{{row['arrive_airport']}}</td>
                     <td>{{row['arrive_datetime']}}</td>
-                    td>{{row['status']}}</td>
+                    <td>
+                        <form action="/staffChangeStatus" method="POST">
+                            <select id="status">
+                                <option value="on_time">On-time</option>
+                                <option value="delay">Delayed</option>
+                                <option value="canceled">Canceled</option>
+                                <option value="no_change" selected>{{row['status']}}</option>
+                            </select></td></td>
+                            <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
+                            <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
+                            <input type="submit" value ="Change"/>
+                        </form>
                 </tr>
             {% endfor %}
     </div>
-	<p><a href="/">Create New Flights</a></p>
-    <p><a href="/">Change Status of Flights</a></p>
+    <h2>My Workspace</h2>
+	<p><a href="/staffCreateFlights">Create New Flights</a></p>
+    <p><a href="/staff">Change Status of Flights</a></p>
     <p><a href="/">Add Airplane</a></p>
     <p><a href="/">Add Airport</a></p>
     <p><a href="/">View Flight Ratings</a></p>
