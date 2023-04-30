@@ -234,6 +234,35 @@ def homeCust():
     cursor.close()
     return render_template('homeCust.html', first_name=first_name, my_flights=my_flights, search=search)
 
+
+# Customer search flights
+@app.route('/custSearchFlights', method=['GET', 'POST'])
+def custSearchFlights():
+    cursor = conn.cursor()
+    # search flights
+    one_or_round = request.form['one_or_round']
+    source_city = request.form['source_city']
+    source_airport = request.form['source_airport']
+    dest_city = request.form['dest_city']
+    dest_airport = request.form['dest_airport']
+    dept_date = request.form['dept_date']
+    if one_or_round == "one":
+        arrive_date = request.form['arrive_date']
+        search = 'SELECT *'  # TODO
+        cursor.execute(search, (source_city, source_airport, dest_city, dest_airport, dept_date, arrive_date))
+        oneFlights = cursor.fetchall()
+    else:
+        return_date = request.form['return_date']
+        searchForward = 'SELECT *'    # TODO
+        searchReturn = 'SELECT *'    # TODO
+        cursor.execute(searchForward, (source_city, source_airport, dest_city, dest_airport, dept_date, return_date))
+        forwardFlights = cursor.fetchall()
+        cursor.execute(searchReturn, (source_city, source_airport, dest_city, dest_airport, dept_date, return_date))
+        returnFlights = cursor.fetchall()
+    cursor.close()
+    return render_template('custSearchFlights.html', oneFlights=oneFlights, forwardFlights=forwardFlights, returnFlights=returnFlights)
+
+
 # TODO
 @app.route('/purchase', method=['GET'])
 def purchase():

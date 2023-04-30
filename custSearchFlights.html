@@ -1,0 +1,202 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Air Ticket Reservation System | Homepage</title>
+    </head>
+<body>
+    <h1>Search Flight</h1>
+    <h2>One-way search</h2>
+    <div>
+        <form action="/custSearchFlights" method="POST">
+            <input type="hidden" name="one_or_round" value="one">
+            <p>
+                <label for="source_city">Source city</label>
+                <input type="text" name = "source_city" placeholder="" />
+                <label for="source_airport">Source airport</label>
+                <input type="text" name = "source_airport" placeholder="" />
+            </p>
+            <p>
+                <label for="dest_city">Destination city</label>
+                <input type="text" name = "dest_city" placeholder="" />
+                <label for="dest_airport">Destination airport</label>
+                <input type="text" name = "dest_airport" placeholder="" />
+            </p>
+            <p>
+                <label for="dept_date">Departure date</label>
+                <input type="date" name = "dept_date" placeholder="" />
+                <label for="arrive_date">Arrival date</label>
+                <input type="date" name = "arrive_date" placeholder=""/>
+            </p>
+            <p>
+                <input type="submit" value = Search />
+            </p>
+        </form>
+    </div>
+    <h2>Round trip search</h2>
+    <div>
+        <form action="/custSearchFlights" method="POST">
+            <input type="hidden" name="one_or_round" value="round">
+            <p>
+                <label for="source_city">Source city</label>
+                <input type="text" name = "source_city" placeholder="" />
+                <label for="source_airport">Source airport</label>
+                <input type="text" name = "source_airport" placeholder="" />
+            </p>
+            <p>
+                <label for="dest_city">Destination city</label>
+                <input type="text" name = "dest_city" placeholder="" />
+                <label for="dest_airport">Destination airport</label>
+                <input type="text" name = "dest_airport" placeholder="" />
+            </p>
+            <p>
+                <label for="dept_date">Departure date</label>
+                <input type="date" name = "dept_date" placeholder="" />
+                <label for="return_date">Return date</label>
+                <input type="date" name = "return_date" placeholder=""/>
+            </p>
+            <p>
+                <input type="submit" value = Search />
+            </p>
+        </form>
+    </div>
+    <h2>Results</h2>
+    <div>
+        {% if oneFlights %}
+            <h3>One-way flights</h3>
+            <style type="text/css">
+                table, th, td{
+                    border: 1px solid black;
+                }
+            </style>
+            <table>
+                <th>Airline</th>
+                <th>Flight number</th>
+                <th>Origin airport</th>
+                <th>Destination airport</th>
+                <th>Departure date</th>
+                <th>Arrival date</th>
+                <th>Availability</th>
+                <th></th>
+                {% for row in oneFlights %}
+                <tr>
+                    <td>{{row['airline_name']}}</td>
+                    <td>{{row['flight_num']}}</td>
+                    <td>{{row['dept_airport']}}</td>
+                    <td>{{row['arrive_airport']}}</td>
+                    <td>{{row['dept_datetime']}}</td>
+                    <td>{{row['arrive_datetime']}}</td>
+                    <td>{{row['availability']}}</td>
+                    <td>{% if row['availability'] > 0 %}
+                            <form action="/purchase" method="POST">
+                                <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
+                                <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
+                                <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
+                                <input type="submit" value = "Purchase"/>
+                            </form>
+                        {% else %}
+                            Sold out
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <h3>One-way flights</h3>
+            <p>No search results available.</p>
+        {% endif %}
+    </div>
+    <div>
+        {% if forwardFlights %}
+            <h3>Forward flights</h3>
+            <style type="text/css">
+                table, th, td{
+                    border: 1px solid black;
+                }
+            </style>
+            <table>
+                <th>Airline</th>
+                <th>Flight number</th>
+                <th>Origin airport</th>
+                <th>Destination airport</th>
+                <th>Departure date</th>
+                <th>Arrival date</th>
+                <th>Availability</th>
+                <th></th>
+                {% for row in oneFlights %}
+                <tr>
+                    <td>{{row['airline_name']}}</td>
+                    <td>{{row['flight_num']}}</td>
+                    <td>{{row['dept_airport']}}</td>
+                    <td>{{row['arrive_airport']}}</td>
+                    <td>{{row['dept_datetime']}}</td>
+                    <td>{{row['arrive_datetime']}}</td>
+                    <td>{{row['availability']}}</td>
+                    <td>{% if row['availability'] > 0 %}
+                            <form action="/purchase" method="POST">
+                                <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
+                                <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
+                                <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
+                                <input type="submit" value = "Purchase"/>
+                            </form>
+                        {% else %}
+                            Sold out
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <h3>Forward flights</h3>
+            <p>No forward flights available.</p>
+        {% endif %}
+    </div>
+    <div>
+        {% if returnFlights %}
+            <h3>Return flights</h3>
+            <style type="text/css">
+                table, th, td{
+                    border: 1px solid black;
+                }
+            </style>
+            <table>
+                <th>Airline</th>
+                <th>Flight number</th>
+                <th>Origin airport</th>
+                <th>Destination airport</th>
+                <th>Departure date</th>
+                <th>Arrival date</th>
+                <th>Availability</th>
+                <th></th>
+                {% for row in oneFlights %}
+                <tr>
+                    <td>{{row['airline_name']}}</td>
+                    <td>{{row['flight_num']}}</td>
+                    <td>{{row['dept_airport']}}</td>
+                    <td>{{row['arrive_airport']}}</td>
+                    <td>{{row['dept_datetime']}}</td>
+                    <td>{{row['arrive_datetime']}}</td>
+                    <td>{{row['availability']}}</td>
+                    <td>{% if row['availability'] > 0 %}
+                            <form action="/purchase" method="POST">
+                                <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
+                                <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
+                                <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
+                                <input type="submit" value = "Purchase"/>
+                            </form>
+                        {% else %}
+                            Sold out
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <h3>Return flights</h3>
+            <p>No return flights available.</p>
+        {% endif %}
+    </div>
+    <a href="/homeCust">Go back</a>
+
+</body>
+
+
+</html>
