@@ -7,9 +7,8 @@
     <title>Air Ticket Reservation System | Staff: Create New Flights</title>
 </head>
 <body>
-    <h1>{{airline_name}}</h1>
-    <h2>Add Airplane</h2>
-    <form action="/addAirplane" method="POST">
+    <h1>Add Airplane</h1>
+    <form action="/staffAddAirplane" method="POST">
     </form>
     <p>
     	<label for="plane_id">Airplane ID</label>
@@ -20,8 +19,8 @@
     <p>
     	<label for="company">Company</label>
         <input type="text" name = "company" placeholder="" />
-        <label for="menu_date">Manufactured Date</label>
-        <input type="text" name = "menu_date" placeholder="" />
+        <label for="manu_date">Manufactured Date</label>
+        <input type="text" name = "manu_date" placeholder="" />
     </p>
             
             
@@ -30,8 +29,7 @@
     <br>
     <br>
     
-    <a href="/">Go back</a>
+    <a href="/homeStaff">Go back</a>
 
 </body>
 </html>
-
