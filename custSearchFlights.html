@@ -124,7 +124,7 @@
                 <th>Arrival date</th>
                 <th>Availability</th>
                 <th></th>
-                {% for row in oneFlights %}
+                {% for row in forwardFlights %}
                 <tr>
                     <td>{{row['airline_name']}}</td>
                     <td>{{row['flight_num']}}</td>
@@ -169,7 +169,7 @@
                 <th>Arrival date</th>
                 <th>Availability</th>
                 <th></th>
-                {% for row in oneFlights %}
+                {% for row in returnFlights %}
                 <tr>
                     <td>{{row['airline_name']}}</td>
                     <td>{{row['flight_num']}}</td>
