@@ -157,7 +157,7 @@ def registerAuthStaff():
 	#stores the results in a variable
     data = cursor.fetchone()
     error = None
-    if(data):
+    if data:
 		#If the previous query returns data, then account exists
         error = "This account already exists"
         return render_template('register.html', error = error)
