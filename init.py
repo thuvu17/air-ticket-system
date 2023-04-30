@@ -16,26 +16,26 @@ conn = pymysql.connect(host='localhost',
 #Define a route to hello function
 @app.route('/')
 def hello():
-	return render_template('index.html')
+    return render_template('index.html')
 
 #Define route for login
 @app.route('/loginStaff')
 def loginStaff():
-	return render_template('loginStaff.html')
+    return render_template('loginStaff.html')
 
 @app.route('/loginCust')
 def loginCust():
-	return render_template('loginCust.html')
+    return render_template('loginCust.html')
 
 #Define route for customer register
 @app.route('/registerCust')
 def registerCust():
-	return render_template('registerCust.html')
+    return render_template('registerCust.html')
 
 #Define route for staff register
 @app.route('/registerStaff')
 def registerStaff():
-	return render_template('registerStaff.html')
+    return render_template('registerStaff.html')
 # ------------------------------------------------------------
 # HOMEPAGE WHEN NOT LOGGED IN 
 # ---------------------------
@@ -54,7 +54,7 @@ def loginAuthStaff():
 	data = cursor.fetchone()
 	cursor.close()
 	error = None
-	if(data):
+	if data:
 		#creates a session for the the user
 		#session is a built in
 		session['username'] = username
@@ -79,7 +79,7 @@ def loginAuthCust():
 	data = cursor.fetchone()
 	cursor.close()
 	error = None
-	if(data):
+	if data:
 		#creates a session for the the user
 		session['email'] = email
 		return redirect(url_for('homeCust'))
@@ -135,7 +135,7 @@ def registerAuthCust():
             conn.commit()
         cursor.close()
         return render_template('index.html')
-    
+
 #Authenticate staff register
 @app.route('/registerAuthStaff', methods=['GET', 'POST'])
 def registerAuthStaff():
@@ -217,7 +217,7 @@ def homeCust():
     # VIEW MY FLIGHTS
     # TODO: query that displays all upcoming flights of customer
     query = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime FROM flight ORDER BY dept_datetime'
-    cursor.execute(query, (source_city, source_airport, dest_city, dest_airport, dept_date, arrive_date))
+    cursor.execute(query, (email))
     my_flights = cursor.fetchall()
     # SEARCH FLIGHTS
     #request data from user and display searched flight
@@ -241,12 +241,14 @@ def purchase():
     flight_num = request.form['flight_num']
     dept_daetetime = request.form['dept_datetime']
     # TODO: query to decrement number of availability
+    cursor.execute(query)
+    cursor.close()
 
 # ------------------------------------------------------------
 # STAFF USE CASES
 # Staff homepage
-@app.route('/homeCust', method=['GET', 'POST'])
-def homeCust():
+@app.route('/homeStaff', method=['GET', 'POST'])
+def homeStaff():
     username = session['username']
     cursor = conn.cursor()
     # get first name for welcome message
