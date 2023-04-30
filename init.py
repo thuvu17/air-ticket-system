@@ -339,26 +339,28 @@ def staffAddAirport():
     query = 'SELECT airline_name FROM airline_staff WHERE username = %s'
     cursor.execute(query, (username))
     airline_name = cursor.fetchone()
-    # get airport info for adding
-    airport_code = request.form['airport_code']
-    name = request.form['name']
-    city = request.form['city']
-    country = request.form['county']
-    type = request.form['type']
-	# check if airport is already in the system
-    check = 'SELECT airport_code FROM airport WHERE airport_code = %s'
-    cursor.execute(check, (airport_code))
-	#stores the results in a variable
-    data = cursor.fetchone()
-    error = None
-    if data:
-		# If the previous query returns data, then airport exists
-        error = "This airport already exists"
-        return render_template('staffAddAirport.html', error = error)
+    if request.method == "POST":
+        # get airport info for adding
+        airport_code = request.form['airport_code']
+        name = request.form['name']
+        city = request.form['city']
+        country = request.form['county']
+        type = request.form['type']
+        # check if airport is already in the system
+        check = 'SELECT airport_code FROM airport WHERE airport_code = %s'
+        cursor.execute(check, (airport_code))
+        #stores the results in a variable
+        data = cursor.fetchone()
+        error = None
+        if data:
+            # If the previous query returns data, then airport exists
+            error = "This airport already exists"
+            return render_template('staffAddAirport.html', error = error)
+        else:
+            ins = 'INSERT INTO airport VALUES (%s, %s, %s, %s, %s)'
+            cursor.execute(ins, (airport_code, name, city, country, type))
+            conn.commit()
+            cursor.close()
+            return redirect(url_for('addAirportConfirm'))  #  redirect to confirmation page
     else:
-        ins = 'INSERT INTO airport VALUES (%s, %s, %s, %s, %s)'
-        cursor.execute(ins, (airport_code, name, city, country, type))
-        conn.commit()
-        cursor.close()
-        return redirect(url_for('addAirportConfirm'))  #  redirect to confirmation page
-
+         return render_template('staffAddAirport.html', airline_name = airline_name)
