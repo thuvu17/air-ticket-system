@@ -288,15 +288,14 @@ def staffAddAirplane():
         error = "This airplane already exists"
         return render_template('staffAddAirplane.html', error = error)
     else:
-        ins = 'INSERT INTO airplane VALUES (%s, %s, %s, %s)'
+        ins = 'INSERT INTO airplane VALUES (%s, %s, %s, %s, %s)'
         cursor.execute(ins, (airline_name, plane_id, seats, company, manu_date))
         conn.commit()
         cursor.close()
         return redirect(url_for('addAirplaneConfirm'))  #  redirect to confirmation page
   
 
-# TODO: add airplane conformation page: see all the airplanes owned by the airline
-# Staff change status
+# Confirmation page for addAirplane
 @app.route('/addAirplaneConfirm', method=['POST'])
 def addAirplaneConfirm():
     username = session['username']
@@ -330,3 +329,36 @@ def staffChangeStatus():
     conn.commit()
     cursor.close()
     return redirect(url_for('homeStaff'))
+
+# Staff add airport
+@app.route('/staffAddAirport', method=['GET'])
+def staffAddAirport():
+    username = session['username']
+    cursor = conn.cursor()
+    # get airline name
+    query = 'SELECT airline_name FROM airline_staff WHERE username = %s'
+    cursor.execute(query, (username))
+    airline_name = cursor.fetchone()
+    # get airport info for adding
+    airport_code = request.form['airport_code']
+    name = request.form['name']
+    city = request.form['city']
+    country = request.form['county']
+    type = request.form['type']
+	# check if airport is already in the system
+    check = 'SELECT airport_code FROM airport WHERE airport_code = %s'
+    cursor.execute(check, (airport_code))
+	#stores the results in a variable
+    data = cursor.fetchone()
+    error = None
+    if data:
+		# If the previous query returns data, then airport exists
+        error = "This airport already exists"
+        return render_template('staffAddAirport.html', error = error)
+    else:
+        ins = 'INSERT INTO airport VALUES (%s, %s, %s, %s, %s)'
+        cursor.execute(ins, (airport_code, name, city, country, type))
+        conn.commit()
+        cursor.close()
+        return redirect(url_for('addAirportConfirm'))  #  redirect to confirmation page
+

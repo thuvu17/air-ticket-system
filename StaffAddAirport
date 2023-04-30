@@ -9,35 +9,43 @@
 <body>
     <h1>{{airline_name}}</h1>
     <h2>Add Airport</h2>
-    <form action="/addAirport" method="POST">
+    <form action="/staffAddAirport" method="POST">
+        <p>
+            <label for="airport_code">Airport code</label>
+            <input type="text" name = "airport_code" placeholder="" required/>
+        </p>
+        <p>
+            <label for="name">Airport name</label>
+            <input type="text" name = "name" placeholder="" required/>
+        </p>
+        <p>
+            <label for="city">City</label>
+            <input type="text" name = "city" placeholder="" required/>
+        </p>
+        <p>
+            <label for="country">Country</label>
+            <input type="text" name = "country" placeholder="" required/>
+        </p>
+        <p>
+            <label for="type">Type:</label>
+            <select id="type", name="type">
+                <option value="domestic">Domestic</option>
+                <option value="international">International</option>
+                <option value="both">Both</option>
+            </select>
+        </p>
+        <input type="submit" value = Add />
+        {% if error %}
+		    <p class="error"><strong>Error:</strong> {{error}}</p>
+	    {% endif %}
     </form>
-    <p>
-    	<label for="airport_code">Airplane Code</label>
-        <input type="text" name = "airport_code" placeholder="" />
-        <label for="NAME">Name</label>
-        <input type="text" name = "NAME" placeholder="" />
-    </p>
-    <p>
-    	<label for="city">City</label>
-        <input type="text" name = "city" placeholder="" />
-        <label for="type">Type</label>
-        <select id="type">
-          <option value="domestic">Domestic</option>
-          <option value="international">International</option>
-          <option value="both">Both</option>
-          <option value="null" selected></option>
-        </select>
-
-
-    </p>
             
             
-    <input type="submit" value = Add />
     
     <br>
     <br>
     
-    <a href="/">Go back</a>
+    <a href="/homeStaff">Go back</a>
 
 </body>
 </html>
