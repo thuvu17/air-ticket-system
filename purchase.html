@@ -7,21 +7,39 @@
     <title>Air Ticket Reservation System | Purchase</title>
 </head>
 <body>
-    <h1>Ticket Information</h1>
+    <h1>Ticket Purchase</h1>
+    <h2>Ticket Information</h2>
     <div>
         <p>Airline: {{airline_name}}</p>
         <p>Flight number: {{flight_num}}</p>
-        <p>Departure airport: {{dept_airport}}</p>
-        <p>Arrival airport: {{arrive_airport}}</p>
+        <p>Departure airport: {{flightInfo['dept_airport']}}</p>
+        <p>Arrival airport: {{flightInfo['arrive_airport']}}</p>
         <p>Departure time: {{dept_datetime}}</p>
-        <p>Arrival time: {{arrive_datetime}}</p>
+        <p>Arrival time: {{flightInfo['arrive_datetime']}}</p>
         <p>Base price: ${{base_price}}</p>
         <p>Additionl price: ${{additional_price}}</p>
         <p>Final price: ${{final_price}}</p>
     </div>
-    <h1>Payment Information</h1>
     <div>
     <form action="/purchase" method="POST">
+        <h2>Passenger Information</h2>
+        <p>
+            <label for="card_num">Card number</label>
+            <input type="text" name = "card_num" placeholder="card number" required/>
+        </p>
+        <p>
+            <label for="card_type">Card type</label>
+            <input type="text" name = "card_type" placeholder="card type" required/>
+        </p>
+        <p>
+            <label for="card_name">Name on card</label>
+            <input type="text" name = "card_name" placeholder="cardholder name" required/>
+        </p>
+        <p>
+            <label for="exp_date">Expiration date</label>
+            <input type="date" name = "exp_date" required/>
+        </p>
+        <h2>Payment Information</h2>
         <p>
             <label for="card_num">Card number</label>
             <input type="text" name = "card_num" placeholder="card number" required/>
