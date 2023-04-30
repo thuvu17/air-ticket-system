@@ -35,7 +35,7 @@
                     <td>{{row['arrive_datetime']}}</td>
                     <td>
                         <form action="/staffChangeStatus" method="POST">
-                            <select id="status">
+                            <select id="newStatus" name="newStatus">
                                 <option value="on_time">On-time</option>
                                 <option value="delay">Delayed</option>
                                 <option value="canceled">Canceled</option>
