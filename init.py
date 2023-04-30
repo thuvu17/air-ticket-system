@@ -296,6 +296,21 @@ def staffAddAirplane():
   
 
 # TODO: add airplane conformation page: see all the airplanes owned by the airline
+# Staff change status
+@app.route('/addAirplaneConfirm', method=['POST'])
+def addAirplaneConfirm():
+    username = session['username']
+    cursor = conn.cursor()
+    # get airline name
+    query = 'SELECT airline_name FROM airline_staff WHERE username = %s'
+    cursor.execute(query, (username))
+    airline_name = cursor.fetchone()
+   # get all airplanes of that airline
+    getPlanes = 'SELECT plane_id, seats, company, manu_date FROM airplane WHERE airline_name = %s'
+    cursor.execute(getPlanes, (airline_name))
+    planes = cursor.fetchall()
+    cursor.close()
+    return render_template('addAirplaneConfirm.html', airline_name=airline_name, planes=planes)
 
 # Staff change status
 @app.route('/staffChangeStatus', method=['GET'])

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Ticket Reservation System | Confirmation</title>
+</head>
+<body>
+    <h1>Confirmation page</h1>
+    <p>Airplane has been added</p>
+    <h2>{{airline_name}} airplanes</h2>
+    <div>
+        <style type="text/css">
+            table, th, td{
+                border: 1px solid black;
+            }
+        </style>
+        <table>
+            <th>Plane ID</th>
+            <th>Seats</th>
+            <th>Manufactured company</th>
+            <th>Manufactured date</th>
+            {% for row in planes %}
+                <tr>
+                    <td>{{row['plane_id']}}</td>
+                    <td>{{row['seats']}}</td>
+                    <td>{{row['company']}}</td>
+                    <td>{{row['manu_date']}}</td>
+                </tr>
+            {% endfor %}
+    </div>
+    
+    <br>
+    <br>
+    
+    <a href="/homeStaff">Go back</a>
+
+</body>
+</html>
