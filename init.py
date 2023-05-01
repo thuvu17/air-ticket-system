@@ -133,7 +133,7 @@ def registerAuthCust():
     if data:
 		#If the previous query returns data, then account exists
         error = "This account already exists"
-        return render_template('register.html', error = error)
+        return render_template('register.html', error=error)
     else:
         ins = 'INSERT INTO customer VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         cursor.execute(ins, (email, password, first_name, last_name, building_num, \
@@ -172,7 +172,7 @@ def registerAuthStaff():
     if data:
 		#If the previous query returns data, then account exists
         error = "This account already exists"
-        return render_template('register.html', error = error)
+        return render_template('register.html', error=error)
     else:
         # insert into airline_staff
         ins = 'INSERT INTO airline_staff VALUES(%s, %s, %s, %s, %s, %s)'
@@ -192,7 +192,8 @@ def registerAuthStaff():
             conn.commit()
         cursor.close()
         return render_template('index.html')
-   
+
+# TODO: search round trip or one way
 # VIEW PUBLIC INFO
 @app.route('/viewPublicInfo', method=['GET', 'POST'])
 def viewPublicInfo():
@@ -211,40 +212,33 @@ def viewPublicInfo():
     # TODO: query not done
     query = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime FROM flight ORDER BY dept_datetime'	
     cursor.execute(query, (source_city, source_airport, dest_city, dest_airport, dept_date, arrive_date))
-    search = cursor.fetchone()
+    search_fetch = cursor.fetchone()
+    search = {"airline_name":search_fetch[0], "flight_num":search_fetch[1], "arrive_datetime":search_fetch[2], \
+              "dept_datetime":search_fetch[3]}
     cursor.close()
     return render_template('viewPublicInfo.html',view=view, search=search)
 
 # ------------------------------------------------------------
 # CUSTOMER USE CASES
 # CUSTOMER HOME PAGE
-@app.route('/homeCust', method=['GET', 'POST'])
+@app.route('/homeCust', methods=['GET', 'POST'])
 def homeCust():
     email = session['email']
     cursor = conn.cursor()
     # GET FIRST NAME FOR WELCOME MESSAGE
     query = 'SELECT first_name FROM customer WHERE email = %s'
     cursor.execute(query, (email))
-    first_name = cursor.fetchone()
+    first_name = cursor.fetchone()[0]
     # VIEW MY FLIGHTS
     # TODO: query that displays all upcoming flights of customer
     getFlights = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime FROM flight ORDER BY dept_datetime'
     cursor.execute(getFlights, (email))
-    my_flights = cursor.fetchall()
-    # SEARCH FLIGHTS
-    #request data from user and display searched flight
-    source_city = request.form['source_city']
-    source_airport = request.form['source_airport']
-    dest_city = request.form['dest_city']
-    dest_airport = request.form['dest_airport']
-    dept_date = request.form['dept_date']
-    arrive_date = request.form['arrive_date']
-    # TODO: query include airline, flight num, arr and dept date, base price, availability = seats - count(ticket)
-    query = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime, base_price FROM flight ORDER BY dept_datetime'
-    cursor.execute(query, (source_city, source_airport, dest_city, dest_airport, dept_date, arrive_date))
-    search = cursor.fetchall()
+    my_flights_fetch = cursor.fetchall()
+    my_flights = []
+    for each in my_flights_fetch:
+        my_flights.append({"airline_name":each[0], "flight_num":each[1], "arrive_datetime":each[2], "dept_datetime":each[3]})
     cursor.close()
-    return render_template('homeCust.html', first_name=first_name, my_flights=my_flights, search=search)
+    return render_template('homeCust.html', first_name=first_name, my_flights=my_flights)
 
 
 # CUSTOMER SEARCH FLIGHTS
@@ -258,19 +252,36 @@ def custSearchFlights():
     dest_city = request.form['dest_city']
     dest_airport = request.form['dest_airport']
     dept_date = request.form['dept_date']
+    # if one way
     if one_or_round == "one":
         arrive_date = request.form['arrive_date']
-        search = 'SELECT *'  # TODO
+        search = 'SELECT airline_name, flight_num, dept_airport, arrive_airport, dept_datetime, \
+            arrive_datetime, ??? as availability'  # TODO
         cursor.execute(search, (source_city, source_airport, dest_city, dest_airport, dept_date, arrive_date))
-        oneFlights = cursor.fetchall()
+        oneFlights_fetch = cursor.fetchall()
+        oneFlights = []
+        for each in oneFlights_fetch:
+            oneFlights.append({"airline_name":each[0], "flight_num":each[1], "dept_airport":each[2],\
+                               "arrive_airport":each[3], "dept_datetime":each[4], "arrive_datetime":each[5], "availability":each[6]})
+    # if round trip
     else:
         return_date = request.form['return_date']
         searchForward = 'SELECT *'    # TODO
         searchReturn = 'SELECT *'    # TODO
+        # search forward flights
         cursor.execute(searchForward, (source_city, source_airport, dest_city, dest_airport, dept_date, return_date))
-        forwardFlights = cursor.fetchall()
+        forwardFlights_fetch = cursor.fetchall()
+        forwardFlights = []
+        for each in forwardFlights_fetch:
+            forwardFlights.append({"airline_name":each[0], "flight_num":each[1], "dept_airport":each[2],\
+                               "arrive_airport":each[3], "dept_datetime":each[4], "arrive_datetime":each[5], "availability":each[6]})
+        # search return flights
         cursor.execute(searchReturn, (source_city, source_airport, dest_city, dest_airport, dept_date, return_date))
-        returnFlights = cursor.fetchall()
+        returnFlights_fetch = cursor.fetchall()
+        returnFlights = []
+        for each in returnFlights_fetch:
+            returnFlights.append({"airline_name":each[0], "flight_num":each[1], "dept_airport":each[2],\
+                               "arrive_airport":each[3], "dept_datetime":each[4], "arrive_datetime":each[5], "availability":each[6]})
     cursor.close()
     return render_template('custSearchFlights.html', oneFlights=oneFlights, forwardFlights=forwardFlights, returnFlights=returnFlights)
 
@@ -287,7 +298,9 @@ def custPurchase():
     query = 'SELECT dept_airport, arrive_airport, arrive_datetime, base_price FROM flight WHERE\
         airline_name = %s and flight_num = %s and dept_datetime = %s'
     cursor.execute(query, (airline_name, flight_num, dept_datetime))
-    flightInfo = cursor.fetchone()
+    flightInfo_fetch = cursor.fetchone()
+    flightInfo = {"dept_airport":flightInfo_fetch[0], "arrive_airport":flightInfo_fetch[1], "arrive_datetime":flightInfo_fetch[2],\
+                  "base_price":flightInfo_fetch[3]}
     base_price = flightInfo['base_price']
     # get availability
     getSeats = 'SELECT seats FROM airplane natural join flight WHERE airline_name = %s and\
