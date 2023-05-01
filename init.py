@@ -18,6 +18,11 @@ conn = pymysql.connect(host='localhost',
 def hello():
 	return render_template('index.html')
 
+#Define a route to goodbye function
+@app.route('/goodbye')
+def goodbye():
+	return redirect('/')
+
 #Define route for login
 @app.route('/loginStaff')
 def loginStaff():
