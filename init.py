@@ -121,7 +121,7 @@ def registerAuthCust():
     if data:
 		#If the previous query returns data, then account exists
         error = "This account already exists"
-        return render_template('register.html', error = error)
+        return render_template('register.html', error=error)
     else:
         ins = 'INSERT INTO customer VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         cursor.execute(ins, (email, password, first_name, last_name, building_num, \
@@ -284,12 +284,22 @@ def homeStaff():
     # get first name for welcome message
     query = 'SELECT first_name FROM airline_staff WHERE username = %s'
     cursor.execute(query, (username))
-    first_name = cursor.fetchone()
+    first_name = cursor.fetchone()[0]
+    # get airline name
+    query1 = 'SELECT airline_name FROM airline_staff WHERE username = %s'
+    cursor.execute(query1, (username))
+    airline_name = cursor.fetchone()[0]
     # display flights in the next 30 days
     # TODO: query get flight_num, dept and arrival city/airport/datetime, status within 30 days
-    getFlights = 'SELECT first_name FROM airline_staff WHERE username = %s'
-    cursor.execute(getFlights, (username))
-    flights = cursor.fetchall()
+    getFlights = 'SELECT flight_num, dept_city, dept_airport, dept_datetime, arrive_city,\
+         arrive_airport, arrive_datetime FROM flight natural join airport WHERE airline_name = %s'
+    cursor.execute(getFlights, (airline_name))
+    flights_fetch = cursor.fetchall()
+    flights = []
+    for each in flights_fetch:
+        flights.append({"flight_num":each[0], "dept_city":each[1], "dept_airport":each[2],\
+                        "dept_datetime":each[3], "arrive_city":each[4], "arrive_airport":each[5],\
+                            "arrive_datetime":each[6]})
     cursor.close()
     return render_template('homeStaff.html', first_name=first_name, flights=flights)
 
@@ -301,7 +311,7 @@ def staffAddAirplane():
     # get airline name
     query = 'SELECT airline_name FROM airline_staff WHERE username = %s'
     cursor.execute(query, (username))
-    airline_name = cursor.fetchone()
+    airline_name = cursor.fetchone()[0]
     # get airplane info for adding
     plane_id = request.form['plane_id']
     seats = request.form['seats']
@@ -333,11 +343,14 @@ def addAirplaneConfirm():
     # get airline name
     query = 'SELECT airline_name FROM airline_staff WHERE username = %s'
     cursor.execute(query, (username))
-    airline_name = cursor.fetchone()
+    airline_name = cursor.fetchone()[0]
    # get all airplanes of that airline
     getPlanes = 'SELECT plane_id, seats, company, manu_date FROM airplane WHERE airline_name = %s'
     cursor.execute(getPlanes, (airline_name))
-    planes = cursor.fetchall()
+    planes_fetch = cursor.fetchall()
+    planes = []
+    for each in planes_fetch:
+        planes.append({"plane_id":each[0], "seats":each[1], "company":each[2], "manu_date":each[3]})
     cursor.close()
     return render_template('addAirplaneConfirm.html', airline_name=airline_name, planes=planes)
 
@@ -350,7 +363,7 @@ def staffChangeStatus():
     # get airline name
     query = 'SELECT airline_name FROM airline_staff WHERE username = %s'
     cursor.execute(query, (username))
-    airline_name = cursor.fetchone()
+    airline_name = cursor.fetchone()[0]
    # request airplane info for changing status
     newStatus = request.form['newStatus']
     flight_num = request.form['flight_num']
@@ -370,7 +383,7 @@ def staffAddAirport():
     # get airline name
     query = 'SELECT airline_name FROM airline_staff WHERE username = %s'
     cursor.execute(query, (username))
-    airline_name = cursor.fetchone()
+    airline_name = cursor.fetchone()[0]
     if request.method == "POST":
         # get airport info for adding
         airport_code = request.form['airport_code']
