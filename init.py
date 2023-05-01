@@ -276,8 +276,8 @@ def custSearchFlights():
 
 # CUSTOMER PURCHASE
 # TODO
-@app.route('/purchase', methods=['GET', 'POST'])
-def purchase():
+@app.route('/custPurchase', methods=['GET', 'POST'])
+def custPurchase():
     cursor = conn.cursor()
     email = session['email']
     # flight information 
@@ -308,7 +308,7 @@ def purchase():
         additional_price = 0
     final_price = base_price + additional_price
     if request.method == 'GET':
-        return render_template('purchase.html', airline_name=airline_name, flight_num=flight_num, dept_datetime=dept_datetime, \
+        return render_template('custPurchase.html', airline_name=airline_name, flight_num=flight_num, dept_datetime=dept_datetime, \
                                flightInfo=flightInfo, additional_price=additional_price, final_price=final_price)
     else:
         # payment information
@@ -340,7 +340,7 @@ def purchase():
         insPurchases = 'INSERT INTO purchases VALUES (%s, %s, %s, %s, %s, NULL, NULL)'
         cursor.execute(insPurchases, (ticket_id, card_num, email, date, time))
         conn.commit()
-        return redirect((url_for('purchaseConfirm')))
+        return redirect((url_for('custPurchaseConfirm')))
 
 
 # CUSTOMER CANCEL TRIP
