@@ -9,6 +9,17 @@
 <body>
     <h1>Customer Registration</h1>
     <form action="/registerAuthCust" method="POST">
+        <h2>Account</h2>
+        <div>
+            <p>
+                <label for="email">Email address</label>
+                <input type="email" name = "email" placeholder="email address" required/>
+            </p>
+            <p>
+                <label for="password">Password</label>
+                <input type="password" name = "password" placeholder="password" required/>
+            </p>        
+        </div>
         <h2>Personal information</h2>
         <div>
             <p>
@@ -28,18 +39,7 @@
             <p>
                 <label for="date_of_birth">Date of birth</label>
                 <input type="date" name = "date_of_birth" placeholder="" required/>
-            </p>
-        </div>
-        <h2>Contact</h2>
-        <div>
-            <p>
-                <label for="email">Email address</label>
-                <input type="email" name = "email" placeholder="email address" required/>
-            </p>
-            <p>
-                <label for="password">Password</label>
-                <input type="password" name = "password" placeholder="password" required/>
-            </p>    
+            </p> 
             <p>
                 <label for="phone_num">Phone number</label>
                 <input type="tel" name = "phone_num" placeholder="separated by comma" required multiple/>
@@ -63,7 +63,7 @@
                 <label for="state">State</label>
                 <input type="text" name = "state" placeholder="state" required/>
                 <label for="zip_code">Zip code</label>
-                <input type="text" name = "zip_code" placeholder="zip code" required/>
+                <input type="number" name = "zip_code" placeholder="zip code" required/>
             </p>   
         </div>
         <input type="submit" value = Register />
