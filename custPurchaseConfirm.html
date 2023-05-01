@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Ticket Reservation System | Confirmation</title>
+</head>
+<body>
+    <h1>Confirmation page</h1>
+    <h2>Thank you for choosing to fly with us!</h2>
+    <p>Your ticket purchase has been confirmed for the following flight:</p>
+    <div>
+        <p>Airline: {{airline_name}}</p>
+        <p>Flight number: {{flight_num}}</p>
+        <p>Departure airport: {{flightInfo['dept_airport']}}</p>
+        <p>Arrival airport: {{flightInfo['arrive_airport']}}</p>
+        <p>Departure time: {{dept_datetime}}</p>
+        <p>Arrival time: {{flightInfo['arrive_datetime']}}</p>
+        <p>Final price: ${{final_price}}</p>
+    </div>
+    
+    <br>
+    <br>
+    
+    <a href="/homeCust">Go back</a>
+
+</body>
+</html>

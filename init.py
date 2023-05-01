@@ -340,7 +340,8 @@ def custPurchase():
         insPurchases = 'INSERT INTO purchases VALUES (%s, %s, %s, %s, %s, NULL, NULL)'
         cursor.execute(insPurchases, (ticket_id, card_num, email, date, time))
         conn.commit()
-        return redirect((url_for('custPurchaseConfirm')))
+        return render_template('custPurchaseConfirm.html', airline_name=airline_name, flight_num=flight_num,\
+                               flightInfo=flightInfo, dept_datetime=dept_datetime, final_price=final_price)
 
 
 # CUSTOMER CANCEL TRIP
