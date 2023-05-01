@@ -76,6 +76,8 @@
                         <td>{{row['dept_datetime']}}</td>
                     </tr>
                 {% endfor %}
+        {% else %}
+            <p>No flight found.</p>
         {% endif %}
     </div>
     <a href="/">Go back</a>
