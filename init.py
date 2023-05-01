@@ -23,15 +23,25 @@ def hello():
 def goodbye():
 	return redirect('/')
 
-#Define route for login
+# ----------------------
+# LOGIN
 @app.route('/loginStaff')
 def loginStaff():
-	return render_template('loginStaff.html')
+    return render_template('loginStaff.html')
 
 @app.route('/loginCust')
 def loginCust():
-	return render_template('loginCust.html')
+    return render_template('loginCust.html')
 
+# ----------------------
+# LOGOUT
+@app.route('/custLogout')
+def custLogout():
+	session.pop('email')
+	return redirect('/goodbye')
+
+# -----------------------------
+# REGISTER
 #Define route for customer register
 @app.route('/registerCust')
 def registerCust():
@@ -42,8 +52,9 @@ def registerCust():
 def registerStaff():
 	return render_template('registerStaff.html')
 
-
-#Authenticates the login for staff
+# -----------------------------
+# AUTHENTICATE LOGIN
+# Authenticates the login for staff
 @app.route('/loginAuthStaff', methods=['GET', 'POST'])
 def loginAuthStaff():
 	#grabs information from the forms
@@ -67,8 +78,7 @@ def loginAuthStaff():
 		error = 'Invalid username or password'
 		return render_template('loginStaff.html', error=error)
 
-
-#Authenticates the login for customer
+# Authenticates the login for customer
 @app.route('/loginAuthCust', methods=['GET', 'POST'])
 def loginAuthCust():
 	#grabs information from the forms
@@ -91,7 +101,7 @@ def loginAuthCust():
 		#returns an error message to the html page
 		error = 'Invalid username or password'
 		return render_template('loginCust.html', error=error)
-
+        
 
 #Authenticates customer register
 @app.route('/registerAuthCust', methods=['GET', 'POST'])
