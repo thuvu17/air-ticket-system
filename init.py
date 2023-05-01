@@ -18,7 +18,7 @@ conn = pymysql.connect(host='localhost',
 def hello():
     return render_template('index.html')
 
-#Define route for login
+# LOGIN
 @app.route('/loginStaff')
 def loginStaff():
     return render_template('loginStaff.html')
@@ -26,6 +26,12 @@ def loginStaff():
 @app.route('/loginCust')
 def loginCust():
     return render_template('loginCust.html')
+
+# LOGOUT
+@app.route('/custLogout')
+def custLogout():
+	session.pop('email')
+	return redirect('/goodbye')
 
 #Define route for customer register
 @app.route('/registerCust')
@@ -262,17 +268,42 @@ def custSearchFlights():
     cursor.close()
     return render_template('custSearchFlights.html', oneFlights=oneFlights, forwardFlights=forwardFlights, returnFlights=returnFlights)
 
-
+# Customer purchase
 # TODO
 @app.route('/purchase', methods=['GET', 'POST'])
 def purchase():
     cursor = conn.cursor()
     airline_name = request.form['airline_name']
     flight_num = request.form['flight_num']
-    dept_daetetime = request.form['dept_datetime']
-    # TODO: query to decrement number of availability
-    cursor.execute(query)
-    cursor.close()
+    dept_datetime = request.form['dept_datetime']
+    query = 'SELECT dept_airport, arrive_airport, arrive_datetime, base_price FROM flight WHERE\
+        airline_name = %s and flight_num = %s and dept_datetime = %s'
+    cursor.execute(query, (airline_name, flight_num, dept_datetime))
+    flightInfo = cursor.fetchone()
+    base_price = flightInfo['base_price']
+    # get availability
+    # TODO: get availability
+    availability = cursor.fetchone()
+    if availability <= 0.2:
+        additional_price = 0.25 * base_price
+    else:
+        additional_price = 0
+    final_price = base_price + additional_price
+    if request.method == 'GET':
+        cursor.close()
+        return render_template('purchase.html', airline_name=airline_name, flight_num=flight_num, dept_datetime=dept_datetime, \
+                               flightInfo=flightInfo, additional_price=additional_price, final_price=final_price)
+    else:
+        card_num = request.form['card_num']
+        card_type = request.form['card_type']
+        card_name = request.form['card_name']
+        exp_date = request.form['exp_date']
+        # insert to purchases
+        insPurchase = 'INSERT INTO purchases VALUES ()'
+        # TODO: ticketID?
+        
+        
+    
 
 # ------------------------------------------------------------
 # STAFF USE CASES
