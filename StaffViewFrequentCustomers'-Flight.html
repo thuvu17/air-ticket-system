@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Ticket Reservation System | Staff: View Frequent Customers' Flight</title>
+</head>
+<body>
+    <h1>{{airline_name}}</h1>
+    <h2>{{first_name}}{{last_name}}</h2>
+    
+    <style type="text/css">
+            table, th, td{
+                border: 1px solid black;
+            }
+    </style>
+    <table>
+    	<th>Name</th>
+        <th>Ticket ID</th>
+        <th>Flight Number</th>
+        <th>Departure Date</th>
+        <tr>
+        	<td>{{row['first_name']}}{{row['last_name']}}</td>
+            <td>{{row['ticket_id']}}</td>
+            <td>{{row['flight_num']}}</td>
+            <td>{{row['dept_datetime']}}</td>
+        </tr>
+    </table>
+	
+        <br>
+    
+    <a href="/">Go back</a>
+
+</body>
+</html>
