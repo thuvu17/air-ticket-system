@@ -13,10 +13,30 @@ conn = pymysql.connect(host='localhost',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 
-# Define a route to hello function
+# HELLO
 app.route('/')
 def hello():
     return render_template('index.html')
+
+
+# GOODBYE
+app.route('/goodbye')
+def goodbye():
+    return redirect('/')
+
+
+# LOGOUT STAFF
+@app.route('/logoutStaff')
+def logoutStaff():
+    session.pop('username')
+    return redirect('/goodbye')
+
+
+# LOGOUT CUSTOMER
+@app.route('/logoutCust')
+def logoutCust():
+    session.pop('email')
+    return redirect('/goodbye')
 
 
 # LOGIN STAFF
