@@ -1,5 +1,6 @@
 #Import Flask Library
 from flask import Flask, render_template, request, session, url_for, redirect
+from datetime import datetime
 import pymysql.cursors
 
 #Initialize the app from Flask
@@ -278,6 +279,8 @@ def custSearchFlights():
 @app.route('/purchase', methods=['GET', 'POST'])
 def purchase():
     cursor = conn.cursor()
+    email = session['email']
+    # flight information 
     airline_name = request.form['airline_name']
     flight_num = request.form['flight_num']
     dept_datetime = request.form['dept_datetime']
@@ -287,11 +290,18 @@ def purchase():
     flightInfo = cursor.fetchone()
     base_price = flightInfo['base_price']
     # get availability
+    getSeats = 'SELECT seats FROM airplane natural join flight WHERE airline_name = %s and\
+                flight_num = %s and dept_datetime = %s'
+    cursor.execute(getSeats, (airline_name, flight_num, dept_datetime))
+    seats = cursor.fetchone()[0]
     # TODO: get availability
-    getAvail = 'SELECT  *'
-    cursor.execute(getAvail, (airline_name, flight_num, dept_datetime))
-    availability = cursor.fetchone()
+    getNumTickets = 'SELECT count(*) FROM ticket WHERE airline_name = %s and flight_num = %s \
+                    and dept_datetime = %s'
+    cursor.execute(getNumTickets, (airline_name, flight_num, dept_datetime))
+    numTickets = cursor.fetchone()[0]
+    availability = seats - numTickets
     cursor.close()
+    # calculate final price based on availability
     if availability <= 0.2:
         additional_price = 0.25 * base_price
     else:
@@ -301,13 +311,37 @@ def purchase():
         return render_template('purchase.html', airline_name=airline_name, flight_num=flight_num, dept_datetime=dept_datetime, \
                                flightInfo=flightInfo, additional_price=additional_price, final_price=final_price)
     else:
+        # payment information
         card_num = request.form['card_num']
         card_type = request.form['card_type']
         card_name = request.form['card_name']
         exp_date = request.form['exp_date']
-        # insert to purchases
-        insPurchase = 'INSERT INTO purchases VALUES ()'
-        # TODO: generate ticketID
+        # passenger information 
+        first_name = request.form['first_name']
+        last_name = request.form['last_nam']
+        date_of_birth = request.form['date_of_birth']
+        # INSERT TO PAYMENT_INFO
+        checkCardNum = 'SELECT card_num FROM payment_info WHERE card_num = %s'
+        cursor.execute(checkCardNum, (card_num))
+        data = cursor.fetchone()
+        # if its not already in the system, add
+        if not data:
+            insPayment = 'INSERT INTO payment_info VALUES (%s, %s, %s, %s, %s, %s)'
+            cursor.execute(insPayment, (card_num, card_type, card_name, exp_date, final_price))
+            conn.commit()
+        # INSERT INTO TICKET
+        ticket_id = numTickets + 1
+        insTicket = 'INSERT INTO ticket VALUES (%s, %s, %s, %s, %s, %s, %s)'
+        cursor.execute(insTicket, (ticket_id, airline_name, flight_num, dept_datetime, first_name, last_name, date_of_birth))
+        conn.commit()
+        # INSERT INTO PURCHASES
+        date = datetime.now().date()
+        time = datetime.now().time()
+        insPurchases = 'INSERT INTO purchases VALUES (%s, %s, %s, %s, %s, NULL, NULL)'
+        cursor.execute(insPurchases, (ticket_id, card_num, email, date, time))
+        conn.commit()
+        return redirect((url_for('purchaseConfirm')))
+
 
 # CUSTOMER CANCEL TRIP
 # TODO
@@ -333,7 +367,7 @@ def custCancelTrip():
         popTicket = 'DELETE FROM ticket WHERE ticket_id = %s'
         cursor.execute(popTicket, (ticket_id))
         conn.commit()
-        
+
 
 
 
