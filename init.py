@@ -42,7 +42,7 @@ def custLogout():
 
 
 @app.route('/staffLogout')
-def custLogout():
+def staffLogout():
 	session.pop('username')
 	return redirect('/goodbye')
 
