@@ -216,7 +216,7 @@ def viewPublicInfo():
 
 # ------------------------------------------------------------
 # CUSTOMER USE CASES
-# Customer homepage
+# CUSTOMER HOME PAGE
 @app.route('/homeCust', method=['GET', 'POST'])
 def homeCust():
     email = session['email']
@@ -246,7 +246,7 @@ def homeCust():
     return render_template('homeCust.html', first_name=first_name, my_flights=my_flights, search=search)
 
 
-# Customer search flights
+# CUSTOMER SEARCH FLIGHTS
 @app.route('/custSearchFlights', method=['GET', 'POST'])
 def custSearchFlights():
     cursor = conn.cursor()
@@ -273,7 +273,7 @@ def custSearchFlights():
     cursor.close()
     return render_template('custSearchFlights.html', oneFlights=oneFlights, forwardFlights=forwardFlights, returnFlights=returnFlights)
 
-# Customer purchase
+# CUSTOMER PURCHASE
 # TODO
 @app.route('/purchase', methods=['GET', 'POST'])
 def purchase():
@@ -288,14 +288,16 @@ def purchase():
     base_price = flightInfo['base_price']
     # get availability
     # TODO: get availability
+    getAvail = 'SELECT  *'
+    cursor.execute(getAvail, (airline_name, flight_num, dept_datetime))
     availability = cursor.fetchone()
+    cursor.close()
     if availability <= 0.2:
         additional_price = 0.25 * base_price
     else:
         additional_price = 0
     final_price = base_price + additional_price
     if request.method == 'GET':
-        cursor.close()
         return render_template('purchase.html', airline_name=airline_name, flight_num=flight_num, dept_datetime=dept_datetime, \
                                flightInfo=flightInfo, additional_price=additional_price, final_price=final_price)
     else:
@@ -305,5 +307,36 @@ def purchase():
         exp_date = request.form['exp_date']
         # insert to purchases
         insPurchase = 'INSERT INTO purchases VALUES ()'
-        # TODO: ticketID?
+        # TODO: generate ticketID
+
+# CUSTOMER CANCEL TRIP
+# TODO
+@app.route('/custCancelTrip', methods=['GET', 'POST'])
+def custCancelTrip():
+    cursor = conn.cursor()
+    email = session['email']
+    # TODO: query to find customer purchased flights
+    query = 'SELECT airline_name, flight_num, dept_datetime, arrive_datetime, dept_airport, arrive_airport, ticket_id\
+        FROM flight WHERE airline_name = %s and flight_num = %s and dept_datetime = %s'
+    cursor.execute(query, (email))
+    my_flights = cursor.fetchall()
+    if request.method == 'GET':
+        cursor.close()
+        return render_template('custCancelTrip.html', my_flights=my_flights)
+    else:
+        ticket_id = request.form['ticket_id']
+        # remove from purchase
+        popPurchase = 'DELETE FROM purchase WHERE ticket_id = %s'
+        cursor.execute(popPurchase, (ticket_id))
+        conn.commit()
+        # remove from ticket
+        popTicket = 'DELETE FROM ticket WHERE ticket_id = %s'
+        cursor.execute(popTicket, (ticket_id))
+        conn.commit()
+        
+
+
+
+
+
         
