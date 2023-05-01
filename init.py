@@ -40,6 +40,12 @@ def custLogout():
 	session.pop('email')
 	return redirect('/goodbye')
 
+
+@app.route('/staffLogout')
+def custLogout():
+	session.pop('username')
+	return redirect('/goodbye')
+
 # -----------------------------
 # REGISTER
 #Define route for customer register
@@ -101,7 +107,7 @@ def loginAuthCust():
 		#returns an error message to the html page
 		error = 'Invalid username or password'
 		return render_template('loginCust.html', error=error)
-        
+
 
 #Authenticates customer register
 @app.route('/registerAuthCust', methods=['GET', 'POST'])
