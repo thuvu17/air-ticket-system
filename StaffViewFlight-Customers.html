@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Ticket Reservation System | Flight Customer</title>
+</head>
+<body>
+    <h1>{{airline_name}}</h1>
+    <h2>Customers for {{flight_num}}</h2>
+    
+    <style type="text/css">
+            table, th, td{
+                border: 1px solid black;
+            }
+    </style>
+  
+    <table>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Date of Birth</th>
+      <th>Email</th>
+      <th>Address</th>
+      <th>Passport Number</th>
+      <th>Passport Expiration Date</th>
+      <th>Passport Country</th>
+      <tr>
+        <td>{{row['first_name']}}</td>
+        <td>{{row['last_name']}}</td>
+        <td>{{row['date_of_birth']}}</td>
+        <td>{{row['email']}}</td>
+        <td>{{row['building_num']}}{{row['street']}}{{row['apt_num']}}{{row['city']}}{{row['state']}}{{row['zip_code']}}</td>
+        <td>{{row['passport_num']}}</td>   
+        <td>{{row['passport_exp']}}</td> 
+        <td>{{row['passport_country']}}</td> 
+    </tr>
+    </table>
+
+	<br>
+
+    <a href="/">Go back</a>
+
+
+
+</body>
+</html>
