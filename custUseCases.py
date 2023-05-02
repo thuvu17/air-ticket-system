@@ -18,7 +18,7 @@ conn = pymysql.connect(host='localhost',
                        cursorclass=pymysql.cursors.DictCursor)
 
 
-# CUSTOMER HOME PAGE
+# CUSTOMER HOMEPAGE
 @app.route('/homeCust', methods=['GET'])
 def homeCust():
     email = session['email']
@@ -42,6 +42,7 @@ def homeCust():
     cursor.close()
     return render_template('homeCust.html', first_name=first_name, done_flights=done_flights, \
                            upcoming_flights=upcoming_flights)
+
 
 # CUSTOMER SEARCH FLIGHTS
 @app.route('/custSearchFlights', method=['GET', 'POST'])
