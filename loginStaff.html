@@ -7,12 +7,16 @@
         <title>Air Ticket Reservation System | Login Page</title>
     </head>
 <body>
-    <h1>Login</h1>
+    <h1>Staff Login</h1>
     <form action="/loginAuthStaff" method="POST">
-        <label for="username">Username</label><br>
-        <input type="text" name = "username" placeholder="username" required/> </br>
-        <label for="password">Password</label><br>
-        <input type="password" name = "password" placeholder="password" required/></br>
+        <p>
+            <label for="username">Username</label><br>
+            <input type="text" name = "username" placeholder="username" required/> </br>
+        </p>
+        <p>
+            <label for="password">Password</label><br>
+            <input type="password" name = "password" placeholder="password" required/></br>
+        </p>
         <input type="submit" value = Login />
         {% if error %}
             <p class="error"><strong>Error:</strong> {{error}}</p>

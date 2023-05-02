@@ -7,20 +7,21 @@ app = Flask(__name__)
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
+                       port= 8889,
                        user='root',
                        password='root',
-                       db='air-ticket-reservation',
+                       db='air_ticket_reservation',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 
 # HELLO
-app.route('/')
+@app.route('/')
 def hello():
     return render_template('index.html')
 
 
 # GOODBYE
-app.route('/goodbye')
+@app.route('/goodbye')
 def goodbye():
     return redirect('/')
 
