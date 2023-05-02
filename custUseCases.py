@@ -1,4 +1,5 @@
 # This file contains customer homepage and all use cases
+
 #Import Flask Library
 from flask import Flask, render_template, request, session, url_for, redirect
 from datetime import datetime
@@ -18,25 +19,29 @@ conn = pymysql.connect(host='localhost',
 
 
 # CUSTOMER HOME PAGE
-@app.route('/homeCust', methods=['GET', 'POST'])
+@app.route('/homeCust', methods=['GET'])
 def homeCust():
     email = session['email']
     cursor = conn.cursor()
-    # GET FIRST NAME FOR WELCOME MESSAGE
+    # get first name for welcome message
     query = 'SELECT first_name FROM customer WHERE email = %s'
     cursor.execute(query, (email))
-    first_name = cursor.fetchone()[0]
-    # VIEW MY FLIGHTS
-    # TODO: query that displays all upcoming flights of customer
-    getFlights = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime FROM flight ORDER BY dept_datetime'
-    cursor.execute(getFlights, (email))
-    my_flights_fetch = cursor.fetchall()
-    my_flights = []
-    for each in my_flights_fetch:
-        my_flights.append({"airline_name":each[0], "flight_num":each[1], "arrive_datetime":each[2], "dept_datetime":each[3]})
+    first_name = cursor.fetchone()['first_name']
+    # get purchased flights that already done
+    getDoneFlights = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime \
+        FROM flight natural join ticket natural join purchases natural join customer \
+            WHERE email = %s and dept_datetime < %s ORDER BY dept_datetime'
+    cursor.execute(getDoneFlights, (email, datetime.now()))
+    done_flights = cursor.fetchall()
+    # get purchased flights that are incoming
+    getUpcomingFlights = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime \
+        FROM flight natural join ticket natural join purchases natural join customer \
+            WHERE email = %s and dept_datetime >= %s ORDER BY dept_datetime'
+    cursor.execute(getUpcomingFlights, (email, datetime.now()))
+    upcoming_flights = cursor.fetchall()
     cursor.close()
-    return render_template('homeCust.html', first_name=first_name, my_flights=my_flights)
-
+    return render_template('homeCust.html', first_name=first_name, done_flights=done_flights, \
+                           upcoming_flights=upcoming_flights)
 
 # CUSTOMER SEARCH FLIGHTS
 @app.route('/custSearchFlights', method=['GET', 'POST'])
