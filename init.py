@@ -1,9 +1,11 @@
 # Import Flask Library
 from flask import Flask, render_template, request, session, url_for, redirect
+from datetime import datetime
 import pymysql.cursors
 
 # Initialize the app from Flask
 app = Flask(__name__)
+
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
@@ -13,6 +15,9 @@ conn = pymysql.connect(host='localhost',
                        db='air_ticket_reservation',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
+
+# Secret key
+app.secret_key = 'this is the secret key'
 
 # HELLO
 @app.route('/')
