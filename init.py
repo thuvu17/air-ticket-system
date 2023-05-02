@@ -207,7 +207,6 @@ def registerAuthStaff():
         cursor.close()
         return render_template('index.html')
 
-# TODO: sql syntax
 query_for_searchFlight = 'SELECT airline_name, flight_num, dept_airport, arrive_airport, dept_datetime, arrive_datetime \
     FROM (SELECT airline_name, flight_num, dept_airport, arrive_airport, dept_datetime, arrive_datetime \
         FROM flight natural join airport natural join airplane WHERE date(dept_datetime) = "{}" and \
@@ -231,6 +230,8 @@ def searchFlight():
             search = query_for_searchFlight.format(dept_date, dest_airport, dest_city, source_airport, source_city)
             cursor.execute(search)
             oneFlights = cursor.fetchall()
+            cursor.close()
+            return render_template('oneWayResult.html', oneFlights=oneFlights)
         # if round trip
         else:
             return_date = request.form['return_date']
@@ -242,7 +243,7 @@ def searchFlight():
             # search return flights
             cursor.execute(searchReturn)
             returnFlights = cursor.fetchall()
-        cursor.close()
-        return render_template('searchFlight.html', oneFlights=oneFlights, forwardFlights=forwardFlights, returnFlights=returnFlights)
+            cursor.close()
+            return render_template('roundResult.html', forwardFlights=forwardFlights, returnFlights=returnFlights)
     else:
         return render_template('searchFlight.html')

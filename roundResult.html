@@ -1,0 +1,79 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Air Ticket Reservation System | Search Result</title>
+    </head>
+<body>
+    <h1>Round Trip Search Result</h1>
+    <div>
+        {% if forwardFlights %}
+            <h2>Forward flights</h2>
+            <style type="text/css">
+                table, th, td{
+                    border: 1px solid black;
+                }
+            </style>
+            <table>
+                <th>Airline</th>
+                <th>Flight number</th>
+                <th>Origin airport</th>
+                <th>Destination airport</th>
+                <th>Departure date</th>
+                <th>Arrival date</th>
+                <th></th>
+                {% for row in forwardFlights %}
+                <tr>
+                    <td>{{row['airline_name']}}</td>
+                    <td>{{row['flight_num']}}</td>
+                    <td>{{row['dept_airport']}}</td>
+                    <td>{{row['arrive_airport']}}</td>
+                    <td>{{row['dept_datetime']}}</td>
+                    <td>{{row['arrive_datetime']}}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <h2>Forward flights</h2>
+            <p>No forward flights available.</p>
+        {% endif %}
+    </div>
+    <div>
+        {% if returnFlights %}
+            <h2>Return flights</h2>
+            <style type="text/css">
+                table, th, td{
+                    border: 1px solid black;
+                }
+            </style>
+            <table>
+                <th>Airline</th>
+                <th>Flight number</th>
+                <th>Origin airport</th>
+                <th>Destination airport</th>
+                <th>Departure date</th>
+                <th>Arrival date</th>
+                <th></th>
+                {% for row in returnFlights %}
+                <tr>
+                    <td>{{row['airline_name']}}</td>
+                    <td>{{row['flight_num']}}</td>
+                    <td>{{row['dept_airport']}}</td>
+                    <td>{{row['arrive_airport']}}</td>
+                    <td>{{row['dept_datetime']}}</td>
+                    <td>{{row['arrive_datetime']}}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <h2>Return flights</h2>
+            <p>No return flights available.</p>
+        {% endif %}
+    </div>
+    <br>
+    <p><a href="/searchFlight">Back to search</a></p>
+    <p><a href="/">Back to homepage</a></p>
+
+</body>
+
+
+</html>
