@@ -248,4 +248,4 @@ def searchFlight():
             returnFlights.append({"airline_name":each[0], "flight_num":each[1], "dept_airport":each[2],\
                                "arrive_airport":each[3], "dept_datetime":each[4], "arrive_datetime":each[5]})
     cursor.close()
-    return render_template('custSearchFlights.html', oneFlights=oneFlights, forwardFlights=forwardFlights, returnFlights=returnFlights)
+    return render_template('searchFlight.html', oneFlights=oneFlights, forwardFlights=forwardFlights, returnFlights=returnFlights)
