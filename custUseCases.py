@@ -2,7 +2,7 @@
 
 #Import Flask Library
 from flask import Flask, render_template, request, session, url_for, redirect
-from datetime import datetime
+from datetime import datetime, timedelta
 import pymysql.cursors
 
 # Initialize the app from Flask
@@ -28,13 +28,13 @@ def homeCust():
     cursor.execute(query, (email))
     first_name = cursor.fetchone()['first_name']
     # get purchased flights that already done
-    getDoneFlights = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime \
+    getDoneFlights = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime, ticket_id \
         FROM flight natural join ticket natural join purchases natural join customer \
             WHERE email = %s and dept_datetime < %s ORDER BY dept_datetime'
     cursor.execute(getDoneFlights, (email, datetime.now()))
     done_flights = cursor.fetchall()
     # get purchased flights that are incoming
-    getUpcomingFlights = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime \
+    getUpcomingFlights = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime, ticket_id \
         FROM flight natural join ticket natural join purchases natural join customer \
             WHERE email = %s and dept_datetime >= %s ORDER BY dept_datetime'
     cursor.execute(getUpcomingFlights, (email, datetime.now()))
@@ -42,6 +42,32 @@ def homeCust():
     cursor.close()
     return render_template('homeCust.html', first_name=first_name, done_flights=done_flights, \
                            upcoming_flights=upcoming_flights)
+
+
+# CUSTOMER CANCEL TRIP
+@app.route('/custCancelTrip', methods=['GET', 'POST'])
+def custCancelTrip():
+    cursor = conn.cursor()
+    # check if flight is in more than 24 hours
+    dept_datetime = request.form['dept_datetime']
+    error = None
+    # if <= 24 hours, do not allow cancel
+    if dept_datetime <= datetime.now() + timedelta(days=1):
+        error = "You can only cancel flights that will take place in more than 24 hours!"
+        return render_template('custCancelTripConfirm.html', error=error)
+    # else, remove purchase of flight
+    else:
+        ticket_id = request.form['ticket_id']
+        # remove from purchase
+        popPurchase = 'DELETE FROM purchases WHERE ticket_id = %s'
+        cursor.execute(popPurchase, (ticket_id))
+        conn.commit()
+        # remove from ticket
+        popTicket = 'DELETE FROM ticket WHERE ticket_id = %s'
+        cursor.execute(popTicket, (ticket_id))
+        conn.commit()
+        return render_template('custCancelTripConfirm.html', error=error)
+
 
 
 # CUSTOMER SEARCH FLIGHTS
@@ -158,33 +184,6 @@ def custPurchase():
         conn.commit()
         return render_template('custPurchaseConfirm.html', airline_name=airline_name, flight_num=flight_num,\
                                flightInfo=flightInfo, dept_datetime=dept_datetime, final_price=final_price)
-
-
-# CUSTOMER CANCEL TRIP
-# TODO
-@app.route('/custCancelTrip', methods=['GET', 'POST'])
-def custCancelTrip():
-    cursor = conn.cursor()
-    email = session['email']
-    # TODO: query to find customer purchased flights
-    query = 'SELECT airline_name, flight_num, dept_datetime, arrive_datetime, dept_airport, arrive_airport, ticket_id\
-        FROM flight WHERE airline_name = %s and flight_num = %s and dept_datetime = %s'
-    cursor.execute(query, (email))
-    my_flights = cursor.fetchall()
-    if request.method == 'GET':
-        cursor.close()
-        return render_template('custCancelTrip.html', my_flights=my_flights)
-    else:
-        ticket_id = request.form['ticket_id']
-        # remove from purchase
-        popPurchase = 'DELETE FROM purchase WHERE ticket_id = %s'
-        cursor.execute(popPurchase, (ticket_id))
-        conn.commit()
-        # remove from ticket
-        popTicket = 'DELETE FROM ticket WHERE ticket_id = %s'
-        cursor.execute(popTicket, (ticket_id))
-        conn.commit()
-
 
 
 

@@ -20,12 +20,14 @@
                 <th>Flight number</th>
                 <th>Arrival date</th>
                 <th>Departure date</th>
+                <th>Ticket ID</th>
                 {% for row in done_flights %}
                     <tr>
                         <td>{{row['airline_name']}}</td>
                         <td>{{row['flight_num']}}</td>
                         <td>{{row['arrive_datetime']}}</td>
                         <td>{{row['dept_datetime']}}</td>
+                        <td>{{row['ticket_id']}}</td>
                     </tr>
                 {% endfor %}
         {% else %}
@@ -45,6 +47,7 @@
                 <th>Flight number</th>
                 <th>Arrival date</th>
                 <th>Departure date</th>
+                <th>Ticket ID</th>
                 <th>Cancel trip</th>
                 {% for row in my_fligths %}
                     <tr>
@@ -52,11 +55,11 @@
                         <td>{{row['flight_num']}}</td>
                         <td>{{row['arrive_datetime']}}</td>
                         <td>{{row['dept_datetime']}}</td>
+                        <td>{{row['ticket_id']}}</td>
                         <td>
                             <form action="/custCancelTrip" method="POST">
-                                <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
-                                <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
                                 <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
+                                <input type="hidden" name="ticket_id" value="{{row['ticket_id']}}">
                                 <input type="submit" value = "Cancel"/>
                             </form>
                         </td>
@@ -68,7 +71,6 @@
     </div>
     <h2>Search flights</h2>
     <a href="/custSearchPurchase">Search flights</a>
-    <a href="/custCancelTrip">Cancel trips</a>
     <h2>Previous Trips</h2>
     <h2>Track your spending</h2>
 
