@@ -203,11 +203,11 @@ def registerAuthStaff():
         return render_template('index.html')
 
 # TODO: sql syntax
-query_for_searchFlight = 'CREATE VIEW arrive_match{} AS SELECT airline_name, flight_num, dept_airport, arrive_airport, \
-            dept_datetime, arrive_datetime FROM flight natural join airport natural join airplane \
-            WHERE date(dept_datetime) = {} and arrive_airport = airport_code and name = {} and city = {}; \
-            SELECT airline_name, flight_num, dept_airport, arrive_airport, dept_datetime, arrive_datetime \
-            FROM arrive_match{} natural join airport WHERE dept_airport = airport_code and name = {} and city = {};'
+query_for_searchFlight = 'SELECT airline_name, flight_num, dept_airport, arrive_airport, dept_datetime, arrive_datetime \
+    FROM (SELECT airline_name, flight_num, dept_airport, arrive_airport, dept_datetime, arrive_datetime \
+        FROM flight natural join airport natural join airplane WHERE date(dept_datetime) = "{}" and \
+            arrive_airport = airport_code and name = "{}" and city = "{}") sub natural join airport \
+                WHERE dept_airport = airport_code and name = "{}" and city = "{}"'
 
 # VIEW PUBLIC INFO
 @app.route('/searchFlight', methods=['GET', 'POST'])
@@ -223,32 +223,20 @@ def searchFlight():
         dept_date = request.form['dept_date']
         # if one way
         if one_or_round == "one":
-            search = query_for_searchFlight.format('', dept_date, dest_airport, dest_city, '', source_airport, source_city)
+            search = query_for_searchFlight.format(dept_date, dest_airport, dest_city, source_airport, source_city)
             cursor.execute(search)
-            oneFlights_fetch = cursor.fetchall()
-            oneFlights = []
-            for each in oneFlights_fetch:
-                oneFlights.append({"airline_name":each[0], "flight_num":each[1], "dept_airport":each[2],\
-                                "arrive_airport":each[3], "dept_datetime":each[4], "arrive_datetime":each[5]})
+            oneFlights = cursor.fetchall()
         # if round trip
         else:
             return_date = request.form['return_date']
-            searchForward = query_for_searchFlight.format('_forward', dept_date, dest_airport, dest_city, '_forward', source_airport, source_city)
-            searchReturn = query_for_searchFlight.format('_return', return_date, source_airport, source_city, '_return', dest_airport, dest_city)
+            searchForward = query_for_searchFlight.format(dept_date, dest_airport, dest_city, source_airport, source_city)
+            searchReturn = query_for_searchFlight.format(return_date, source_airport, source_city, dest_airport, dest_city)
             # search forward flights
             cursor.execute(searchForward)
-            forwardFlights_fetch = cursor.fetchall()
-            forwardFlights = []
-            for each in forwardFlights_fetch:
-                forwardFlights.append({"airline_name":each[0], "flight_num":each[1], "dept_airport":each[2],\
-                                "arrive_airport":each[3], "dept_datetime":each[4], "arrive_datetime":each[5]})
+            forwardFlights = cursor.fetchall()
             # search return flights
             cursor.execute(searchReturn)
-            returnFlights_fetch = cursor.fetchall()
-            returnFlights = []
-            for each in returnFlights_fetch:
-                returnFlights.append({"airline_name":each[0], "flight_num":each[1], "dept_airport":each[2],\
-                                "arrive_airport":each[3], "dept_datetime":each[4], "arrive_datetime":each[5]})
+            returnFlights = cursor.fetchall()
         cursor.close()
         return render_template('searchFlight.html', oneFlights=oneFlights, forwardFlights=forwardFlights, returnFlights=returnFlights)
     else:
