@@ -230,19 +230,12 @@ def custTrackSpending():
     cursor.execute(getTotal, (email, datetime.year))
     total_spending = cursor.fetchone()['total_spending']
     # month wise amount in past 6 months
-    # TODO:
     getMonthWise = 'SELECT month(date_time) as month, sum(calc_price) as month_spending \
-        FROM purchases WHERE email = %s and datetdiff(month, date_time, %s) > 0 and \
-            datetdiff(month, date_time, %s) <= 6 GROUP BY month(date_time)'
-    
-    '''SELECT month(date_time) as month, sum(calc_price) as month_spending
-    FROM purchases 
-    WHERE email = 'john.paul@gmail.com' and month(datediff('2023-7-27 09:00:30.75', date_time)) > 0 and
-    month(datediff('2023-7-27 09:00:30.75', date_time)) <= 6 
-    GROUP BY month(date_time)'''
-
-    cursor.execute(getMonthWise, (email, datetime.year))
+        FROM purchases WHERE email = %s and datetdiff(%s, date_time) > 0 and \
+            datetdiff(%s, date_time) <= 180  GROUP BY month(date_time)'
+    cursor.execute(getMonthWise, (email, datetime.now()))
     month_wise = cursor.fetchall()
+    # TODO:
     return render_template('custTrackSpending.html', total_spending, month_wise)
 
 
