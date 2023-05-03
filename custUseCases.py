@@ -29,13 +29,13 @@ def homeCust():
     first_name = cursor.fetchone()['first_name']
     # get purchased flights that already done
     getDoneFlights = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime \
-        FROM flight natural join ticket natural join purchases natural join customer \
+        FROM flight natural join ticket natural join purchases \
             WHERE email = %s and dept_datetime < %s ORDER BY dept_datetime'
     cursor.execute(getDoneFlights, (email, datetime.now()))
     done_flights = cursor.fetchall()
     # get purchased flights that are incoming
     getUpcomingFlights = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime, ticket_id \
-        FROM flight natural join ticket natural join purchases natural join customer \
+        FROM flight natural join ticket natural join purchases \
             WHERE email = %s and dept_datetime >= %s ORDER BY dept_datetime'
     cursor.execute(getUpcomingFlights, (email, datetime.now()))
     upcoming_flights = cursor.fetchall()
@@ -115,6 +115,7 @@ def custSearchFlight():
 # CUSTOMER PURCHASE
 @app.route('/custPurchase', methods=['POST'])
 def custPurchase():
+    email = session['email']
     referrer = request.headers.get('Referer')
     cursor = conn.cursor()
     # getting all the information for purchase
@@ -123,7 +124,7 @@ def custPurchase():
         airline_name = request.form['airline_name']
         flight_num = request.form['flight_num']
         dept_datetime = request.form['dept_datetime']
-        query = 'SELECT dept_airport, arrive_airport, arrive_datetime, base_price FROM flight WHERE\
+        query = 'SELECT dept_airport, arrive_airport, arrive_datetime, base_price FROM flight WHERE \
             airline_name = %s and flight_num = %s and dept_datetime = %s'
         cursor.execute(query, (airline_name, flight_num, dept_datetime))
         flightInfo = cursor.fetchone()
@@ -150,7 +151,6 @@ def custPurchase():
                                 additional_price=additional_price, final_price=final_price, numTickets=numTickets)
     # process purchase
     else:
-        email = session['email']
         airline_name = request.form['airline_name']
         flight_num = request.form['flight_num']
         dept_datetime = request.form['dept_datetime']
@@ -165,27 +165,38 @@ def custPurchase():
         first_name = request.form['first_name']
         last_name = request.form['last_name']
         date_of_birth = request.form['date_of_birth']
-        # INSERT TO PAYMENT_INFO
-        checkCardNum = 'SELECT card_num FROM payment_info WHERE card_num = %s'
-        cursor.execute(checkCardNum, (card_num))
+        # CHECK IF CUSTOMER ALREADY PURCHASED THE FLIGHT
+        check = 'SELECT * FROM flight natural join ticket natural join purchases \
+        WHERE airline_name = %s and flight_num = %s and dept_datetime = %s \
+            and email = %s and first_name = %s and last_name = %s'
+        cursor.execute(check, (airline_name, flight_num, dept_datetime, email))
         data = cursor.fetchone()
-        # if its not already in the system, add
-        if not data:
-            insPayment = 'INSERT INTO payment_info VALUES (%s, %s, %s, %s)'
-            cursor.execute(insPayment, (card_num, card_type, card_name, exp_date))
+        error = None
+        if data:
+            error = "You already booked this ticket!"
+            return render_template('custPurchaseConfirm.html', error=error)
+        else:
+            # INSERT TO PAYMENT_INFO
+            checkCardNum = 'SELECT card_num FROM payment_info WHERE card_num = %s'
+            cursor.execute(checkCardNum, (card_num))
+            data = cursor.fetchone()
+            # if its not already in the system, add
+            if not data:
+                insPayment = 'INSERT INTO payment_info VALUES (%s, %s, %s, %s)'
+                cursor.execute(insPayment, (card_num, card_type, card_name, exp_date))
+                conn.commit()
+            # INSERT INTO TICKET
+            ticket_id = "{}{}".format(email[:2], str(numTickets + 1))
+            insTicket = 'INSERT INTO ticket VALUES (%s, %s, %s, %s, %s, %s, %s)'
+            cursor.execute(insTicket, (ticket_id, airline_name, flight_num, dept_datetime, \
+                                    first_name, last_name, date_of_birth))
             conn.commit()
-        # INSERT INTO TICKET
-        ticket_id = "{}{}".format(email[:2], str(numTickets + 1))
-        insTicket = 'INSERT INTO ticket VALUES (%s, %s, %s, %s, %s, %s, %s)'
-        cursor.execute(insTicket, (ticket_id, airline_name, flight_num, dept_datetime, \
-                                   first_name, last_name, date_of_birth))
-        conn.commit()
-        # INSERT INTO PURCHASES
-        insPurchases = 'INSERT INTO purchases VALUES (%s, %s, %s, %s, %s, NULL, NULL)'
-        cursor.execute(insPurchases, (ticket_id, card_num, email, datetime.now(), final_price))
-        conn.commit()
-        cursor.close()
-        return render_template('custPurchaseConfirm.html')
+            # INSERT INTO PURCHASES
+            insPurchases = 'INSERT INTO purchases VALUES (%s, %s, %s, %s, %s, NULL, NULL)'
+            cursor.execute(insPurchases, (ticket_id, card_num, email, datetime.now(), final_price))
+            conn.commit()
+            cursor.close()
+            return render_template('custPurchaseConfirm.html', error=error)
 
 
 
