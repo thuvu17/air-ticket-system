@@ -35,14 +35,14 @@ def goodbye():
 @app.route('/logoutStaff')
 def logoutStaff():
     session.pop('username')
-    return redirect('/goodbye')
+    return redirect(url_for('goodbye'))
 
 
 # LOGOUT CUSTOMER
 @app.route('/logoutCust')
 def logoutCust():
     session.pop('email')
-    return redirect('/goodbye')
+    return redirect(url_for('goodbye'))
 
 
 # LOGIN STAFF
