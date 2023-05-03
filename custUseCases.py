@@ -28,7 +28,7 @@ def homeCust():
     cursor.execute(query, (email))
     first_name = cursor.fetchone()['first_name']
     # get purchased flights that already done
-    getDoneFlights = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime, ticket_id \
+    getDoneFlights = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime \
         FROM flight natural join ticket natural join purchases natural join customer \
             WHERE email = %s and dept_datetime < %s ORDER BY dept_datetime'
     cursor.execute(getDoneFlights, (email, datetime.now()))
@@ -113,12 +113,13 @@ def custSearchFlight():
 
 
 # CUSTOMER PURCHASE
+
 # TODO
 @app.route('/custPurchase', methods=['GET', 'POST'])
 def custPurchase():
     cursor = conn.cursor()
     email = session['email']
-    # flight information 
+    # get flight information 
     airline_name = request.form['airline_name']
     flight_num = request.form['flight_num']
     dept_datetime = request.form['dept_datetime']
@@ -147,6 +148,7 @@ def custPurchase():
     else:
         additional_price = 0
     final_price = base_price + additional_price
+
     if request.method == 'GET':
         return render_template('custPurchase.html', airline_name=airline_name, flight_num=flight_num, dept_datetime=dept_datetime, \
                                flightInfo=flightInfo, additional_price=additional_price, final_price=final_price)

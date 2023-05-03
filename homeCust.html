@@ -47,7 +47,7 @@
                 <th>Arrival date</th>
                 <th>Departure date</th>
                 <th>Cancel trip</th>
-                {% for row in my_fligths %}
+                {% for row in upcoming_flights %}
                     <tr>
                         <td>{{row['airline_name']}}</td>
                         <td>{{row['flight_num']}}</td>
@@ -55,9 +55,7 @@
                         <td>{{row['dept_datetime']}}</td>
                         <td>
                             <form action="/custCancelTrip" method="POST">
-                                <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
-                                <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
-                                <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
+                                <input type="hidden" name="ticket_id" value="{{row['ticket_id']}}">
                                 <input type="submit" value = "Cancel"/>
                             </form>
                         </td>
