@@ -24,23 +24,24 @@
                 <th>Arrival date</th>
                 <th>Purchase</th>
                 {% for row in forwardFlights %}
-                <tr>
-                    <td>{{row['airline_name']}}</td>
-                    <td>{{row['flight_num']}}</td>
-                    <td>{{row['dept_airport']}}</td>
-                    <td>{{row['arrive_airport']}}</td>
-                    <td>{{row['dept_datetime']}}</td>
-                    <td>{{row['arrive_datetime']}}</td>
-                    <td>
-                        <form action="/custPurchase" method="POST">
-                            <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
-                            <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
-                            <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
-                            <input type="submit" value = "Purchase"/>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
+                    <tr>
+                        <td>{{row['airline_name']}}</td>
+                        <td>{{row['flight_num']}}</td>
+                        <td>{{row['dept_airport']}}</td>
+                        <td>{{row['arrive_airport']}}</td>
+                        <td>{{row['dept_datetime']}}</td>
+                        <td>{{row['arrive_datetime']}}</td>
+                        <td>
+                            <form action="/custPurchase" method="POST">
+                                <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
+                                <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
+                                <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
+                                <input type="submit" value = "Purchase"/>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
         {% else %}
             <h2>Forward flights</h2>
             <p>No forward flights available.</p>
@@ -63,23 +64,24 @@
                 <th>Arrival date</th>
                 <th>Purchase</th>
                 {% for row in returnFlights %}
-                <tr>
-                    <td>{{row['airline_name']}}</td>
-                    <td>{{row['flight_num']}}</td>
-                    <td>{{row['dept_airport']}}</td>
-                    <td>{{row['arrive_airport']}}</td>
-                    <td>{{row['dept_datetime']}}</td>
-                    <td>{{row['arrive_datetime']}}</td>
-                    <td>
-                        <form action="/custPurchase" method="POST">
-                            <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
-                            <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
-                            <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
-                            <input type="submit" value = "Purchase"/>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
+                    <tr>
+                        <td>{{row['airline_name']}}</td>
+                        <td>{{row['flight_num']}}</td>
+                        <td>{{row['dept_airport']}}</td>
+                        <td>{{row['arrive_airport']}}</td>
+                        <td>{{row['dept_datetime']}}</td>
+                        <td>{{row['arrive_datetime']}}</td>
+                        <td>
+                            <form action="/custPurchase" method="POST">
+                                <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
+                                <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
+                                <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
+                                <input type="submit" value = "Purchase"/>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
         {% else %}
             <h2>Return flights</h2>
             <p>No return flights available.</p>
