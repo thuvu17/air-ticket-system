@@ -4,9 +4,7 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 from datetime import datetime, timedelta
 import pymysql.cursors
-
-# Initialize the app from Flask
-app = Flask(__name__)
+from init import app
 
 # Configure MySQL
 conn = pymysql.connect(host='localhost',
@@ -167,7 +165,7 @@ def cust_purchase():
         check = 'SELECT * FROM flight natural join ticket natural join purchases \
         WHERE airline_name = %s and flight_num = %s and dept_datetime = %s \
             and email = %s and first_name = %s and last_name = %s'
-        cursor.execute(check, (airline_name, flight_num, dept_datetime, email))
+        cursor.execute(check, (airline_name, flight_num, dept_datetime, email, first_name, last_name))
         data = cursor.fetchone()
         error = None
         if data:
