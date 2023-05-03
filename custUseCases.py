@@ -112,47 +112,47 @@ def custSearchFlight():
         return render_template('custSearchFlight.html')
 
 
-# CUSTOMER PURCHASE
-
 # TODO
-@app.route('/custPurchase', methods=['GET', 'POST'])
+# CUSTOMER PURCHASE
+@app.route('/custPurchase', methods=['POST'])
 def custPurchase():
     cursor = conn.cursor()
-    email = session['email']
-    # get flight information 
-    airline_name = request.form['airline_name']
-    flight_num = request.form['flight_num']
-    dept_datetime = request.form['dept_datetime']
-    query = 'SELECT dept_airport, arrive_airport, arrive_datetime, base_price FROM flight WHERE\
-        airline_name = %s and flight_num = %s and dept_datetime = %s'
-    cursor.execute(query, (airline_name, flight_num, dept_datetime))
-    flightInfo_fetch = cursor.fetchone()
-    flightInfo = {"dept_airport":flightInfo_fetch[0], "arrive_airport":flightInfo_fetch[1], "arrive_datetime":flightInfo_fetch[2],\
-                  "base_price":flightInfo_fetch[3]}
-    base_price = flightInfo['base_price']
-    # get availability
-    getSeats = 'SELECT seats FROM airplane natural join flight WHERE airline_name = %s and\
-                flight_num = %s and dept_datetime = %s'
-    cursor.execute(getSeats, (airline_name, flight_num, dept_datetime))
-    seats = cursor.fetchone()[0]
-    # TODO: get availability
-    getNumTickets = 'SELECT count(*) FROM ticket WHERE airline_name = %s and flight_num = %s \
-                    and dept_datetime = %s'
-    cursor.execute(getNumTickets, (airline_name, flight_num, dept_datetime))
-    numTickets = cursor.fetchone()[0]
-    availability = seats - numTickets
-    cursor.close()
-    # calculate final price based on availability
-    if availability <= 0.2:
-        additional_price = 0.25 * base_price
+    # getting all the information for purchase
+    if 'custPurchase.html' not in request.referrer:
+        # get flight information 
+        airline_name = request.form['airline_name']
+        flight_num = request.form['flight_num']
+        dept_datetime = request.form['dept_datetime']
+        query = 'SELECT dept_airport, arrive_airport, arrive_datetime, base_price FROM flight WHERE\
+            airline_name = %s and flight_num = %s and dept_datetime = %s'
+        cursor.execute(query, (airline_name, flight_num, dept_datetime))
+        flightInfo = cursor.fetchone()
+        base_price = flightInfo['base_price']
+        # get availability
+        getSeats = 'SELECT seats FROM airplane natural join flight WHERE airline_name = %s and\
+                    flight_num = %s and dept_datetime = %s'
+        cursor.execute(getSeats, (airline_name, flight_num, dept_datetime))
+        seats = cursor.fetchone()['seats']
+        getNumTickets = 'SELECT count(*) as numTickets FROM ticket WHERE airline_name = %s and \
+            flight_num = %s and dept_datetime = %s'
+        cursor.execute(getNumTickets, (airline_name, flight_num, dept_datetime))
+        numTickets = cursor.fetchone()['numTickets']
+        availability = seats - numTickets
+        cursor.close()
+        # calculate final price based on availability
+        if availability <= 0.2 * seats:
+            additional_price = 0.25 * base_price
+        else:
+            additional_price = 0
+        final_price = base_price + additional_price
+        return render_template('custPurchase.html', airline_name=airline_name, flight_num=flight_num, \
+                               dept_datetime=dept_datetime, flightInfo=flightInfo, \
+                                additional_price=additional_price, final_price=final_price, numTickets=numTickets)
+    # process purchase
     else:
-        additional_price = 0
-    final_price = base_price + additional_price
-
-    if request.method == 'GET':
-        return render_template('custPurchase.html', airline_name=airline_name, flight_num=flight_num, dept_datetime=dept_datetime, \
-                               flightInfo=flightInfo, additional_price=additional_price, final_price=final_price)
-    else:
+        email = session['email']
+        final_price = request.form['final_price']
+        numTickets = request.form['numTickets']
         # payment information
         card_num = request.form['card_num']
         card_type = request.form['card_type']
@@ -165,23 +165,23 @@ def custPurchase():
         # INSERT TO PAYMENT_INFO
         checkCardNum = 'SELECT card_num FROM payment_info WHERE card_num = %s'
         cursor.execute(checkCardNum, (card_num))
-        data = cursor.fetchone()
+        data = cursor.fetchone()['card_num']
         # if its not already in the system, add
         if not data:
-            insPayment = 'INSERT INTO payment_info VALUES (%s, %s, %s, %s, %s, %s)'
-            cursor.execute(insPayment, (card_num, card_type, card_name, exp_date, final_price))
+            insPayment = 'INSERT INTO payment_info VALUES (%s, %s, %s, %s)'
+            cursor.execute(insPayment, (card_num, card_type, card_name, exp_date))
             conn.commit()
         # INSERT INTO TICKET
-        ticket_id = numTickets + 1
+        ticket_id = "{}{}".format(email, numTickets + 1)
         insTicket = 'INSERT INTO ticket VALUES (%s, %s, %s, %s, %s, %s, %s)'
-        cursor.execute(insTicket, (ticket_id, airline_name, flight_num, dept_datetime, first_name, last_name, date_of_birth))
+        cursor.execute(insTicket, (ticket_id, airline_name, flight_num, dept_datetime, \
+                                   first_name, last_name, date_of_birth))
         conn.commit()
         # INSERT INTO PURCHASES
-        date = datetime.now().date()
-        time = datetime.now().time()
         insPurchases = 'INSERT INTO purchases VALUES (%s, %s, %s, %s, %s, NULL, NULL)'
-        cursor.execute(insPurchases, (ticket_id, card_num, email, date, time))
+        cursor.execute(insPurchases, (ticket_id, card_num, email, datetime.now(), final_price))
         conn.commit()
+        cursor.close()
         return render_template('custPurchaseConfirm.html', airline_name=airline_name, flight_num=flight_num,\
                                flightInfo=flightInfo, dept_datetime=dept_datetime, final_price=final_price)
 

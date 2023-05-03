@@ -23,6 +23,8 @@
     <div>
     <form action="/custPurchase" method="POST">
         <h2>Passenger Information</h2>
+        <input type="hidden" name="final_price" value="{{final_price}}">
+        <input type="hidden" name="numTickets" value="{{numTickets}}">
         <p>
             <label for="first_name">First name</label>
             <input type="text" name = "first_name" placeholder="" required/>
