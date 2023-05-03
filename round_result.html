@@ -8,7 +8,7 @@
 <body>
     <h1>Round Trip Search Result</h1>
     <div>
-        {% if forwardFlights %}
+        {% if forward_flights %}
             <h2>Forward flights</h2>
             <style type="text/css">
                 table, th, td{
@@ -22,7 +22,7 @@
                 <th>Destination airport</th>
                 <th>Departure date</th>
                 <th>Arrival date</th>
-                {% for row in forwardFlights %}
+                {% for row in forward_flights %}
                     <tr>
                         <td>{{row['airline_name']}}</td>
                         <td>{{row['flight_num']}}</td>
@@ -39,7 +39,7 @@
         {% endif %}
     </div>
     <div>
-        {% if returnFlights %}
+        {% if return_flights %}
             <h2>Return flights</h2>
             <style type="text/css">
                 table, th, td{
@@ -53,7 +53,7 @@
                 <th>Destination airport</th>
                 <th>Departure date</th>
                 <th>Arrival date</th>
-                {% for row in returnFlights %}
+                {% for row in return_flights %}
                     <tr>
                         <td>{{row['airline_name']}}</td>
                         <td>{{row['flight_num']}}</td>
@@ -70,7 +70,7 @@
         {% endif %}
     </div>
     <br>
-    <p><a href="/searchFlight">Back to search</a></p>
+    <p><a href="/search_flight">Back to search</a></p>
     <p><a href="/">Back to homepage</a></p>
 
 </body>

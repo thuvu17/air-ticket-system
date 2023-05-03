@@ -26,43 +26,43 @@ def hello():
 
 
 # LOGOUT STAFF
-@app.route('/logoutStaff')
-def logoutStaff():
+@app.route('/lougout_staff')
+def lougout_staff():
     session.pop('username')
     return redirect(url_for('/'))
 
 # LOGOUT CUSTOMER
-@app.route('/logoutCust')
-def logoutCust():
+@app.route('/logout_cust')
+def logout_cust():
     session.pop('email')
     return redirect(url_for('/'))
 
 
 # LOGIN STAFF
-@app.route('/loginStaff')
-def loginStaff():
-    return render_template('loginStaff.html')
+@app.route('/login_staff')
+def login_staff():
+    return render_template('login_staff.html')
 
 # LOGIN CUSTOMER
-@app.route('/loginCust')
-def loginCust():
-    return render_template('loginCust.html')
+@app.route('/login_cust')
+def login_cust():
+    return render_template('login_cust.html')
 
 
 # REGISTER CUSTOMER
-@app.route('/registerCust')
-def registerCust():
-    return render_template('registerCust.html')
+@app.route('/register_cust')
+def register_cust():
+    return render_template('register_cust.html')
 
 # REGISTER STAFF
-@app.route('/registerStaff')
-def registerStaff():
-    return render_template('registerStaff.html')
+@app.route('/register_staff')
+def register_staff():
+    return render_template('register_staff.html')
 
 
 # LOGIN AUTHENTICATION STAFF
-@app.route('/loginAuthStaff', methods=['GET', 'POST'])
-def loginAuthStaff():
+@app.route('/login_auth_staff', methods=['GET', 'POST'])
+def login_auth_staff():
     # grabs information from the forms
     username = request.form['username']
     password = request.form['password']
@@ -77,16 +77,16 @@ def loginAuthStaff():
     if data:
         # creates a session for the the user
         session['username'] = username
-        return redirect(url_for('homeStaff'))
+        return redirect(url_for('home_staff'))
     else:
         # returns an error message to the html page
         error = 'Invalid username or password'
-        return render_template('loginStaff.html', error=error)
+        return render_template('login_staff.html', error=error)
 
 
 # LOGIN AUTHENTICATION CUSTOMER
-@app.route('/loginAuthCust', methods=['GET', 'POST'])
-def loginAuthCust():
+@app.route('/login_auth_cust', methods=['GET', 'POST'])
+def login_auth_cust():
     # grabs information from the forms
     email = request.form['email']
     password = request.form['password']
@@ -101,16 +101,16 @@ def loginAuthCust():
     if data:
         # creates a session for the the user
         session['email'] = email
-        return redirect(url_for('homeCust'))
+        return redirect(url_for('home_cust'))
     else:
         # returns an error message to the html page
         error = 'Invalid email or password'
-        return render_template('loginCust.html', error=error)
+        return render_template('login_cust.html', error=error)
 
 
 # REGISTER AUTHENTICATION CUSTOMER
-@app.route('/registerAuthCust', methods=['GET', 'POST'])
-def registerAuthCust():
+@app.route('/register_auth_cust', methods=['GET', 'POST'])
+def register_auth_cust():
     # grabs information from the forms
     first_name = request.form['first_name']
     last_name = request.form['last_name']
@@ -138,7 +138,7 @@ def registerAuthCust():
     if data:
         # If the previous query returns data, then account exists
         error = "This account already exists"
-        return render_template('registerCust.html', error=error)
+        return render_template('register_cust.html', error=error)
     else:
         ins = 'INSERT INTO customer VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         cursor.execute(ins, (email, password, first_name, last_name, building_num,
@@ -156,8 +156,8 @@ def registerAuthCust():
 
 
 # REGISTER AUTHENTICATION STAFF
-@app.route('/registerAuthStaff', methods=['GET', 'POST'])
-def registerAuthStaff():
+@app.route('/register_auth_staff', methods=['GET', 'POST'])
+def register_auth_staff():
     # grabs information from the forms
     first_name = request.form['first_name']
     last_name = request.form['last_name']
@@ -178,7 +178,7 @@ def registerAuthStaff():
     if data:
         # If the previous query returns data, then account exists
         error = "This account already exists"
-        return render_template('registerStaff.html', error=error)
+        return render_template('register_staff.html', error=error)
     else:
         # insert into airline_staff
         ins = 'INSERT INTO airline_staff VALUES(%s, %s, %s, %s, %s, %s)'
@@ -187,28 +187,29 @@ def registerAuthStaff():
         conn.commit()
         phone_nums = phone_num.split('%2C')
         emails = email.split('%2C')
+        # TODO: haven't tested
         # insert all phone numbers into staff_phone
         for num in phone_nums:
             ins = 'INSERT INTO staff_phone VALUES(%s, %s)'
             cursor.execute(ins, (username, num))
             conn.commit()
         # insert all email into staff_email
-        for emailAddr in emails:
+        for email_addr in emails:
             ins = 'INSERT INTO staff_email VALUES(%s, %s)'
-            cursor.execute(ins, (username, emailAddr))
+            cursor.execute(ins, (username, email_addr))
             conn.commit()
         cursor.close()
         return render_template('index.html')
 
-query_for_searchFlight = 'SELECT airline_name, flight_num, dept_airport, arrive_airport, dept_datetime, arrive_datetime \
+query_for_search_flight = 'SELECT airline_name, flight_num, dept_airport, arrive_airport, dept_datetime, arrive_datetime \
     FROM (SELECT airline_name, flight_num, dept_airport, arrive_airport, dept_datetime, arrive_datetime \
         FROM flight natural join airport natural join airplane WHERE date(dept_datetime) = "{}" and \
             arrive_airport = airport_code and name = "{}" and city = "{}") sub natural join airport \
                 WHERE dept_airport = airport_code and name = "{}" and city = "{}"'
 
 # VIEW PUBLIC INFO
-@app.route('/searchFlight', methods=['GET', 'POST'])
-def searchFlight():
+@app.route('/search_flight', methods=['GET', 'POST'])
+def search_flight():
     if request.method == 'POST':
         cursor = conn.cursor()
         # get search info
@@ -220,23 +221,23 @@ def searchFlight():
         dept_date = request.form['dept_date']
         # if one way
         if one_or_round == "one":
-            search = query_for_searchFlight.format(dept_date, dest_airport, dest_city, source_airport, source_city)
+            search = query_for_search_flight.format(dept_date, dest_airport, dest_city, source_airport, source_city)
             cursor.execute(search)
-            oneFlights = cursor.fetchall()
+            one_flights = cursor.fetchall()
             cursor.close()
-            return render_template('oneWayResult.html', oneFlights=oneFlights)
+            return render_template('one_way_result.html', one_flights=one_flights)
         # if round trip
         else:
             return_date = request.form['return_date']
-            searchForward = query_for_searchFlight.format(dept_date, dest_airport, dest_city, source_airport, source_city)
-            searchReturn = query_for_searchFlight.format(return_date, source_airport, source_city, dest_airport, dest_city)
+            search_forward = query_for_search_flight.format(dept_date, dest_airport, dest_city, source_airport, source_city)
+            search_return = query_for_search_flight.format(return_date, source_airport, source_city, dest_airport, dest_city)
             # search forward flights
-            cursor.execute(searchForward)
-            forwardFlights = cursor.fetchall()
+            cursor.execute(search_forward)
+            forward_flights = cursor.fetchall()
             # search return flights
-            cursor.execute(searchReturn)
-            returnFlights = cursor.fetchall()
+            cursor.execute(search_return)
+            return_flights = cursor.fetchall()
             cursor.close()
-            return render_template('roundResult.html', forwardFlights=forwardFlights, returnFlights=returnFlights)
+            return render_template('round_result.html', forward_flights=forward_flights, return_flights=return_flights)
     else:
-        return render_template('searchFlight.html')
+        return render_template('search_flight.html')

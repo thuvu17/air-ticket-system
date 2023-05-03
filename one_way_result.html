@@ -7,7 +7,7 @@
     </head>
 <body>
     <h1>One-way Search Result</h1>
-    {% if oneFlights %}
+    {% if one_flights %}
         <style type="text/css">
             table, th, td{
                 border: 1px solid black;
@@ -20,7 +20,7 @@
             <th>Destination airport</th>
             <th>Departure date</th>
             <th>Arrival date</th>
-            {% for row in oneFlights %}
+            {% for row in one_flights %}
                 <tr>
                     <td>{{row['airline_name']}}</td>
                     <td>{{row['flight_num']}}</td>
@@ -35,7 +35,7 @@
         <p>No search results available.</p>
     {% endif %}
     <br>
-    <p><a href="/searchFlight">Back to search</a></p>
+    <p><a href="/search_flight">Back to search</a></p>
     <p><a href="/">Back to homepage</a></p>
 
 </body>
