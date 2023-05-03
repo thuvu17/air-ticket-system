@@ -23,6 +23,9 @@
     <div>
     <form action="/custPurchase" method="POST">
         <h2>Passenger Information</h2>
+        <input type="hidden" name="airline_name" value="{{airline_name}}">
+        <input type="hidden" name="flight_num" value="{{flight_num}}">
+        <input type="hidden" name="dept_datetime" value="{{dept_datetime}}">
         <input type="hidden" name="final_price" value="{{final_price}}">
         <input type="hidden" name="numTickets" value="{{numTickets}}">
         <p>
@@ -44,7 +47,7 @@
         </p>
         <p>
             <label for="card_type">Card type</label>
-            <input type="text" name = "card_type" placeholder="card type" required/>
+            <input type="text" name = "card_type" placeholder="credit/debit" required/>
         </p>
         <p>
             <label for="card_name">Name on card</label>

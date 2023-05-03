@@ -112,13 +112,13 @@ def custSearchFlight():
         return render_template('custSearchFlight.html')
 
 
-# TODO
 # CUSTOMER PURCHASE
 @app.route('/custPurchase', methods=['POST'])
 def custPurchase():
+    referrer = request.headers.get('Referer')
     cursor = conn.cursor()
     # getting all the information for purchase
-    if 'custPurchase.html' not in request.referrer:
+    if 'custPurchase' not in referrer:
         # get flight information 
         airline_name = request.form['airline_name']
         flight_num = request.form['flight_num']
@@ -146,13 +146,16 @@ def custPurchase():
             additional_price = 0
         final_price = base_price + additional_price
         return render_template('custPurchase.html', airline_name=airline_name, flight_num=flight_num, \
-                               dept_datetime=dept_datetime, flightInfo=flightInfo, \
+                               dept_datetime=dept_datetime, flightInfo=flightInfo, base_price=base_price, \
                                 additional_price=additional_price, final_price=final_price, numTickets=numTickets)
     # process purchase
     else:
         email = session['email']
-        final_price = request.form['final_price']
-        numTickets = request.form['numTickets']
+        airline_name = request.form['airline_name']
+        flight_num = request.form['flight_num']
+        dept_datetime = request.form['dept_datetime']
+        final_price = float(request.form['final_price'])
+        numTickets = int(request.form['numTickets'])
         # payment information
         card_num = request.form['card_num']
         card_type = request.form['card_type']
@@ -160,19 +163,19 @@ def custPurchase():
         exp_date = request.form['exp_date']
         # passenger information 
         first_name = request.form['first_name']
-        last_name = request.form['last_nam']
+        last_name = request.form['last_name']
         date_of_birth = request.form['date_of_birth']
         # INSERT TO PAYMENT_INFO
         checkCardNum = 'SELECT card_num FROM payment_info WHERE card_num = %s'
         cursor.execute(checkCardNum, (card_num))
-        data = cursor.fetchone()['card_num']
+        data = cursor.fetchone()
         # if its not already in the system, add
         if not data:
             insPayment = 'INSERT INTO payment_info VALUES (%s, %s, %s, %s)'
             cursor.execute(insPayment, (card_num, card_type, card_name, exp_date))
             conn.commit()
         # INSERT INTO TICKET
-        ticket_id = "{}{}".format(email, numTickets + 1)
+        ticket_id = "{}{}".format(email[:2], str(numTickets + 1))
         insTicket = 'INSERT INTO ticket VALUES (%s, %s, %s, %s, %s, %s, %s)'
         cursor.execute(insTicket, (ticket_id, airline_name, flight_num, dept_datetime, \
                                    first_name, last_name, date_of_birth))
@@ -182,8 +185,7 @@ def custPurchase():
         cursor.execute(insPurchases, (ticket_id, card_num, email, datetime.now(), final_price))
         conn.commit()
         cursor.close()
-        return render_template('custPurchaseConfirm.html', airline_name=airline_name, flight_num=flight_num,\
-                               flightInfo=flightInfo, dept_datetime=dept_datetime, final_price=final_price)
+        return render_template('custPurchaseConfirm.html')
 
 
 
