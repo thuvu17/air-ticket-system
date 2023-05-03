@@ -1,19 +1,9 @@
 # This file contains customer homepage and all use cases
 
-#Import Flask Library
-from flask import Flask, render_template, request, session, url_for, redirect
+# Import Flask Library
+from flask import Flask, render_template, request, session
 from datetime import datetime, timedelta
-import pymysql.cursors
-from init import app
-
-# Configure MySQL
-conn = pymysql.connect(host='localhost',
-                       port= 8889,
-                       user='root',
-                       password='root',
-                       db='air_ticket_reservation',
-                       charset='utf8mb4',
-                       cursorclass=pymysql.cursors.DictCursor)
+from setup import app, conn
 
 
 # CUSTOMER HOMEPAGE
