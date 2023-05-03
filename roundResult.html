@@ -22,17 +22,17 @@
                 <th>Destination airport</th>
                 <th>Departure date</th>
                 <th>Arrival date</th>
-                <th></th>
                 {% for row in forwardFlights %}
-                <tr>
-                    <td>{{row['airline_name']}}</td>
-                    <td>{{row['flight_num']}}</td>
-                    <td>{{row['dept_airport']}}</td>
-                    <td>{{row['arrive_airport']}}</td>
-                    <td>{{row['dept_datetime']}}</td>
-                    <td>{{row['arrive_datetime']}}</td>
-                </tr>
-            {% endfor %}
+                    <tr>
+                        <td>{{row['airline_name']}}</td>
+                        <td>{{row['flight_num']}}</td>
+                        <td>{{row['dept_airport']}}</td>
+                        <td>{{row['arrive_airport']}}</td>
+                        <td>{{row['dept_datetime']}}</td>
+                        <td>{{row['arrive_datetime']}}</td>
+                    </tr>
+                {% endfor %}
+            </table>
         {% else %}
             <h2>Forward flights</h2>
             <p>No forward flights available.</p>
@@ -53,17 +53,17 @@
                 <th>Destination airport</th>
                 <th>Departure date</th>
                 <th>Arrival date</th>
-                <th></th>
                 {% for row in returnFlights %}
-                <tr>
-                    <td>{{row['airline_name']}}</td>
-                    <td>{{row['flight_num']}}</td>
-                    <td>{{row['dept_airport']}}</td>
-                    <td>{{row['arrive_airport']}}</td>
-                    <td>{{row['dept_datetime']}}</td>
-                    <td>{{row['arrive_datetime']}}</td>
-                </tr>
-            {% endfor %}
+                    <tr>
+                        <td>{{row['airline_name']}}</td>
+                        <td>{{row['flight_num']}}</td>
+                        <td>{{row['dept_airport']}}</td>
+                        <td>{{row['arrive_airport']}}</td>
+                        <td>{{row['dept_datetime']}}</td>
+                        <td>{{row['arrive_datetime']}}</td>
+                    </tr>
+                {% endfor %}
+            </table>
         {% else %}
             <h2>Return flights</h2>
             <p>No return flights available.</p>
