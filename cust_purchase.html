@@ -12,22 +12,22 @@
     <div>
         <p>Airline: {{airline_name}}</p>
         <p>Flight number: {{flight_num}}</p>
-        <p>Departure airport: {{flightInfo['dept_airport']}}</p>
-        <p>Arrival airport: {{flightInfo['arrive_airport']}}</p>
+        <p>Departure airport: {{flight_info['dept_airport']}}</p>
+        <p>Arrival airport: {{flight_info['arrive_airport']}}</p>
         <p>Departure time: {{dept_datetime}}</p>
-        <p>Arrival time: {{flightInfo['arrive_datetime']}}</p>
+        <p>Arrival time: {{flight_info['arrive_datetime']}}</p>
         <p>Base price: ${{base_price}}</p>
         <p>Additionl price: ${{additional_price}}</p>
         <p>Final price: ${{final_price}}</p>
     </div>
     <div>
-    <form action="/custPurchase" method="POST">
+    <form action="/cust_purchase" method="POST">
         <h2>Passenger Information</h2>
         <input type="hidden" name="airline_name" value="{{airline_name}}">
         <input type="hidden" name="flight_num" value="{{flight_num}}">
         <input type="hidden" name="dept_datetime" value="{{dept_datetime}}">
         <input type="hidden" name="final_price" value="{{final_price}}">
-        <input type="hidden" name="numTickets" value="{{numTickets}}">
+        <input type="hidden" name="num_tickets" value="{{num_tickets}}">
         <p>
             <label for="first_name">First name</label>
             <input type="text" name = "first_name" placeholder="" required/>
@@ -61,6 +61,6 @@
     </form>
     </div>
     <br>
-    <a href="/homeCust">Go back</a>
+    <a href="/home_cust">Go back</a>
 </body>
 </html>

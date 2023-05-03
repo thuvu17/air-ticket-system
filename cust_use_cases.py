@@ -19,8 +19,8 @@ conn = pymysql.connect(host='localhost',
 
 
 # CUSTOMER HOMEPAGE
-@app.route('/homeCust', methods=['GET'])
-def homeCust():
+@app.route('/home_cust', methods=['GET'])
+def home_cust():
     email = session['email']
     cursor = conn.cursor()
     # get first name for welcome message
@@ -28,25 +28,25 @@ def homeCust():
     cursor.execute(query, (email))
     first_name = cursor.fetchone()['first_name']
     # get purchased flights that already done
-    getDoneFlights = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime, ticket_id \
+    get_done_flights = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime, ticket_id \
         FROM flight natural join ticket natural join purchases \
             WHERE email = %s and dept_datetime < %s ORDER BY dept_datetime'
-    cursor.execute(getDoneFlights, (email, datetime.now()))
+    cursor.execute(get_done_flights, (email, datetime.now()))
     done_flights = cursor.fetchall()
     # get purchased flights that are incoming
-    getUpcomingFlights = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime, ticket_id \
+    get_upcoming = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime, ticket_id \
         FROM flight natural join ticket natural join purchases \
             WHERE email = %s and dept_datetime >= %s ORDER BY dept_datetime'
-    cursor.execute(getUpcomingFlights, (email, datetime.now()))
+    cursor.execute(get_upcoming, (email, datetime.now()))
     upcoming_flights = cursor.fetchall()
     cursor.close()
-    return render_template('homeCust.html', first_name=first_name, done_flights=done_flights, \
+    return render_template('home_cust.html', first_name=first_name, done_flights=done_flights, \
                            upcoming_flights=upcoming_flights)
 
 
 # CUSTOMER CANCEL TRIP
-@app.route('/custCancelTrip', methods=['GET', 'POST'])
-def custCancelTrip():
+@app.route('/cust_cancel_trip', methods=['GET', 'POST'])
+def cust_cancel_trip():
     cursor = conn.cursor()
     # check if flight is in more than 24 hours
     dept_datetime = request.form['dept_datetime']
@@ -54,19 +54,19 @@ def custCancelTrip():
     # if <= 24 hours, do not allow cancel
     if dept_datetime <= datetime.now() + timedelta(days=1):
         error = "You can only cancel flights that will take place in more than 24 hours!"
-        return render_template('custCancelTripConfirm.html', error=error)
+        return render_template('cust_cancel_trip_confirm.html', error=error)
     # else, remove purchase of flight
     else:
         ticket_id = request.form['ticket_id']
         # remove from purchase
-        popPurchase = 'DELETE FROM purchases WHERE ticket_id = %s'
-        cursor.execute(popPurchase, (ticket_id))
+        pop_purchase = 'DELETE FROM purchases WHERE ticket_id = %s'
+        cursor.execute(pop_purchase, (ticket_id))
         conn.commit()
         # remove from ticket
-        popTicket = 'DELETE FROM ticket WHERE ticket_id = %s'
-        cursor.execute(popTicket, (ticket_id))
+        pop_ticket = 'DELETE FROM ticket WHERE ticket_id = %s'
+        cursor.execute(pop_ticket, (ticket_id))
         conn.commit()
-        return render_template('custCancelTripConfirm.html', error=error)
+        return render_template('cust_cancel_trip_confirm.html', error=error)
 
 
 
@@ -77,8 +77,8 @@ search_query = 'SELECT airline_name, flight_num, dept_airport, arrive_airport, d
             arrive_airport = airport_code and name = "{}" and city = "{}") sub natural join airport \
                 WHERE dept_airport = airport_code and name = "{}" and city = "{}"'
 
-@app.route('/custSearchFlight', methods=['GET', 'POST'])
-def custSearchFlight():
+@app.route('/cust_search_flight', methods=['GET', 'POST'])
+def cust_search_flight():
     if request.method == 'POST':
         cursor = conn.cursor()
         # get search info
@@ -92,29 +92,29 @@ def custSearchFlight():
         if one_or_round == "one":
             search = search_query.format(dept_date, dest_airport, dest_city, source_airport, source_city)
             cursor.execute(search)
-            oneFlights = cursor.fetchall()
+            one_flights = cursor.fetchall()
             cursor.close()
-            return render_template('custOneWayResult.html', oneFlights=oneFlights)
+            return render_template('cust_one_way_result.html', one_flights=one_flights)
         # if round trip
         else:
             return_date = request.form['return_date']
-            searchForward = search_query.format(dept_date, dest_airport, dest_city, source_airport, source_city)
-            searchReturn = search_query.format(return_date, source_airport, source_city, dest_airport, dest_city)
+            search_forward = search_query.format(dept_date, dest_airport, dest_city, source_airport, source_city)
+            search_return = search_query.format(return_date, source_airport, source_city, dest_airport, dest_city)
             # search forward flights
-            cursor.execute(searchForward)
-            forwardFlights = cursor.fetchall()
+            cursor.execute(search_forward)
+            forward_flights = cursor.fetchall()
             # search return flights
-            cursor.execute(searchReturn)
-            returnFlights = cursor.fetchall()
+            cursor.execute(search_return)
+            return_flights = cursor.fetchall()
             cursor.close()
-            return render_template('custRoundResult.html', forwardFlights=forwardFlights, returnFlights=returnFlights)
+            return render_template('cust_round_result.html', forward_flights=forward_flights, return_flights=return_flights)
     else:
-        return render_template('custSearchFlight.html')
+        return render_template('cust_search_flight.html')
 
 
 # CUSTOMER PURCHASE
-@app.route('/custPurchase', methods=['POST'])
-def custPurchase():
+@app.route('/cust_purchase', methods=['POST'])
+def cust_purchase():
     email = session['email']
     referrer = request.headers.get('Referer')
     cursor = conn.cursor()
@@ -123,23 +123,23 @@ def custPurchase():
     flight_num = request.form['flight_num']
     dept_datetime = request.form['dept_datetime']
     # getting all the information for purchase
-    if 'custPurchase' not in referrer:
+    if 'cust_purchase' not in referrer:
         # get flight information 
         query = 'SELECT dept_airport, arrive_airport, arrive_datetime, base_price FROM flight WHERE \
             airline_name = %s and flight_num = %s and dept_datetime = %s'
         cursor.execute(query, (airline_name, flight_num, dept_datetime))
-        flightInfo = cursor.fetchone()
-        base_price = flightInfo['base_price']
+        flight_info = cursor.fetchone()
+        base_price = flight_info['base_price']
         # get availability
-        getSeats = 'SELECT seats FROM airplane natural join flight WHERE airline_name = %s and\
+        get_seats = 'SELECT seats FROM airplane natural join flight WHERE airline_name = %s and\
                     flight_num = %s and dept_datetime = %s'
-        cursor.execute(getSeats, (airline_name, flight_num, dept_datetime))
+        cursor.execute(get_seats, (airline_name, flight_num, dept_datetime))
         seats = cursor.fetchone()['seats']
-        getNumTickets = 'SELECT count(*) as numTickets FROM ticket WHERE airline_name = %s and \
+        get_num_tickets = 'SELECT count(*) as num_tickets FROM ticket WHERE airline_name = %s and \
             flight_num = %s and dept_datetime = %s'
-        cursor.execute(getNumTickets, (airline_name, flight_num, dept_datetime))
-        numTickets = cursor.fetchone()['numTickets']
-        availability = seats - numTickets
+        cursor.execute(get_num_tickets, (airline_name, flight_num, dept_datetime))
+        num_tickets = cursor.fetchone()['num_tickets']
+        availability = seats - num_tickets
         cursor.close()
         # calculate final price based on availability
         if availability <= 0.2 * seats:
@@ -147,13 +147,13 @@ def custPurchase():
         else:
             additional_price = 0
         final_price = base_price + additional_price
-        return render_template('custPurchase.html', airline_name=airline_name, flight_num=flight_num, \
-                               dept_datetime=dept_datetime, flightInfo=flightInfo, base_price=base_price, \
-                                additional_price=additional_price, final_price=final_price, numTickets=numTickets)
+        return render_template('cust_purchase.html', airline_name=airline_name, flight_num=flight_num, \
+                               dept_datetime=dept_datetime, flight_info=flight_info, base_price=base_price, \
+                                additional_price=additional_price, final_price=final_price, num_tickets=num_tickets)
     # process purchase
     else:
         final_price = float(request.form['final_price'])
-        numTickets = int(request.form['numTickets'])
+        num_tickets = int(request.form['num_tickets'])
         # payment information
         card_num = request.form['card_num']
         card_type = request.form['card_type']
@@ -173,40 +173,40 @@ def custPurchase():
         if data:
             cursor.close()
             error = "You already booked this ticket!"
-            return render_template('custPurchaseConfirm.html', error=error)
+            return render_template('cust_purchase_confirm.html', error=error)
         else:
             # INSERT TO PAYMENT_INFO
-            checkCardNum = 'SELECT card_num FROM payment_info WHERE card_num = %s'
-            cursor.execute(checkCardNum, (card_num))
+            check_card_num = 'SELECT card_num FROM payment_info WHERE card_num = %s'
+            cursor.execute(check_card_num, (card_num))
             data = cursor.fetchone()
             # if its not already in the system, add
             if not data:
-                insPayment = 'INSERT INTO payment_info VALUES (%s, %s, %s, %s)'
-                cursor.execute(insPayment, (card_num, card_type, card_name, exp_date))
+                ins_payment = 'INSERT INTO payment_info VALUES (%s, %s, %s, %s)'
+                cursor.execute(ins_payment, (card_num, card_type, card_name, exp_date))
                 conn.commit()
             # INSERT INTO TICKET
-            ticket_id = "{}{}".format(email[:2], str(numTickets + 1))
-            insTicket = 'INSERT INTO ticket VALUES (%s, %s, %s, %s, %s, %s, %s)'
-            cursor.execute(insTicket, (ticket_id, airline_name, flight_num, dept_datetime, \
+            ticket_id = "{}{}".format(email[:2], str(num_tickets + 1))
+            ins_ticket = 'INSERT INTO ticket VALUES (%s, %s, %s, %s, %s, %s, %s)'
+            cursor.execute(ins_ticket, (ticket_id, airline_name, flight_num, dept_datetime, \
                                     first_name, last_name, date_of_birth))
             conn.commit()
             # INSERT INTO PURCHASES
-            insPurchases = 'INSERT INTO purchases VALUES (%s, %s, %s, %s, %s, NULL, NULL)'
-            cursor.execute(insPurchases, (ticket_id, card_num, email, datetime.now(), final_price))
+            ins_purchases = 'INSERT INTO purchases VALUES (%s, %s, %s, %s, %s, NULL, NULL)'
+            cursor.execute(ins_purchases, (ticket_id, card_num, email, datetime.now(), final_price))
             conn.commit()
             cursor.close()
-            return render_template('custPurchaseConfirm.html', error=error)
+            return render_template('cust_purchase_confirm.html', error=error)
         
 
 # CUSTOMER RATE
-@app.route('/custRate', methods=['POST'])
-def custRate():
+@app.route('/cust_rate', methods=['POST'])
+def cust_rate():
     email = session['email']
     cursor = conn.cursor()
     referrer = request.headers.get('Referer')
     ticket_id = request.form['ticket_id']
-    if 'homeCust' in referrer:
-        return render_template('custRate.html', ticket_id=ticket_id)
+    if 'home_cust' in referrer:
+        return render_template('cust_rate.html', ticket_id=ticket_id)
     else:
         # ADD RATING AND COMMENT
         rating = request.form['rating']
@@ -215,13 +215,13 @@ def custRate():
         cursor.execute(query, (rating, comment, email, ticket_id))
         conn.commit()
         cursor.close()
-        return render_template('custRateConfirm.html')
+        return render_template('cust_rate_confirm.html')
 
 
 
 # CUSTOMER TRACK SPENDING
-@app.route('/custTrackSpending', methods=['GET', 'POST'])
-def custTrackSpending():
+@app.route('/cust_track_spending', methods=['GET', 'POST'])
+def cust_track_spending():
     email = session['email']
     cursor = conn.cursor()
     # total amount in past year
@@ -247,7 +247,7 @@ def custTrackSpending():
         cursor.execute(get_month_wise, (email, today, start, today, end))
         search = cursor.fetchall()
     cursor.close()
-    return render_template('custTrackSpending.html', year=year, total_spending=total_spending, \
+    return render_template('cust_track_spending.html', year=year, total_spending=total_spending, \
                            month_wise=month_wise, search=search)
 
 

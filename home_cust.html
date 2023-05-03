@@ -28,7 +28,7 @@
                         <td>{{row['arrive_datetime']}}</td>
                         <td>{{row['dept_datetime']}}</td>
                         <td>
-                            <form action="/custRate" method="POST">
+                            <form action="/cust_rate" method="POST">
                                 <input type="hidden" name="ticket_id" value="{{row['ticket_id']}}">
                                 <input type="submit" value = "Rate"/>
                             </form>
@@ -61,7 +61,7 @@
                         <td>{{row['arrive_datetime']}}</td>
                         <td>{{row['dept_datetime']}}</td>
                         <td>
-                            <form action="/custCancelTrip" method="POST">
+                            <form action="/cust_cancel_trip" method="POST">
                                 <input type="hidden" name="ticket_id" value="{{row['ticket_id']}}">
                                 <input type="submit" value = "Cancel"/>
                             </form>
@@ -74,11 +74,11 @@
         {% endif %}
     </div>
     <h2>Search flights</h2>
-    <p><a href="/custSearchFlight">Search flights</a></p>
+    <p><a href="/cust_search_flight">Search flights</a></p>
     <h2>Track my spending</h2>
-    <p><a href="/custTrackSpending">Track my spending</a></p>
+    <p><a href="/cust_track_spending">Track my spending</a></p>
     <br><br>
-    <a href="/logoutCust">Logout</a>
+    <a href="/cust_logout">Logout</a>
 
 </body>
 

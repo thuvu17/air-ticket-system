@@ -7,7 +7,7 @@
     </head>
 <body>
     <h1>One-way Search Result</h1>
-    {% if oneFlights %}
+    {% if one_flights %}
         <style type="text/css">
             table, th, td{
                 border: 1px solid black;
@@ -21,7 +21,7 @@
             <th>Departure date</th>
             <th>Arrival date</th>
             <th>Purchase</th>
-            {% for row in oneFlights %}
+            {% for row in one_flights %}
                 <tr>
                     <td>{{row['airline_name']}}</td>
                     <td>{{row['flight_num']}}</td>
@@ -30,7 +30,7 @@
                     <td>{{row['dept_datetime']}}</td>
                     <td>{{row['arrive_datetime']}}</td>
                     <td>
-                        <form action="/custPurchase" method="POST">
+                        <form action="/cust_purchase" method="POST">
                             <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
                             <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
                             <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
@@ -44,8 +44,8 @@
         <p>No search results available.</p>
     {% endif %}
     <br>
-    <p><a href="/custSearchFlight">Back to search</a></p>
-    <p><a href="/homeCust">Back to homepage</a></p>
+    <p><a href="/cust_search_flight">Back to search</a></p>
+    <p><a href="/home_cust">Back to homepage</a></p>
 
 </body>
 
