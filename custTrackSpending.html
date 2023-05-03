@@ -10,7 +10,7 @@
     <h1>Track My Spending</h1>
     <h2>Annual total spending</h2>
     <p>In {{year}}, you have spent a total of: ${{total_spending}}</p>
-    <h2>Monthly spending</h2>
+    <h2>Monthly spending in the past 6 months</h2>
     <div>
         <style type="text/css">
             table, th, td{
@@ -28,7 +28,7 @@
             {% endfor %}
         </table>
     </div>
-    <h3>Specify the range of search</h3>
+    <h3>View your spending in the following range:</h3>
     <div>
         <form action="/custTrackSpending" method="POST">
             <p>
@@ -44,6 +44,7 @@
     </div>
     {% if search %}
     <div>
+        <h4>Search result</h4>
         <style type="text/css">
             table, th, td{
                 border: 1px solid black;
