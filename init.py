@@ -3,6 +3,9 @@ from flask import Flask, render_template, request, session, url_for, redirect
 from datetime import datetime, timedelta
 import pymysql.cursors
 
+# include customer use cases
+import cust_use_cases
+
 # Initialize the app from Flask
 app = Flask(__name__)
 
