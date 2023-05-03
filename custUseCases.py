@@ -218,39 +218,37 @@ def custRate():
         return render_template('custRateConfirm.html')
 
 
-# TODO: have not tested
+
 # CUSTOMER TRACK SPENDING
 @app.route('/custTrackSpending', methods=['GET', 'POST'])
 def custTrackSpending():
+    email = session['email']
+    cursor = conn.cursor()
+    # total amount in past year
+    year = datetime.now().year
+    today = datetime.now().date
+    get_total = 'SELECT sum(calc_price) as total_spending FROM purchases WHERE \
+        email = %s and year(date_time) = %s'
+    cursor.execute(get_total, (email, year))
+    total_spending = cursor.fetchone()['total_spending']
+    # month wise amount in past 6 months
+    get_month_wise = 'SELECT month(date_time) as month, sum(calc_price) as month_spending \
+        FROM purchases WHERE email = %s and datediff(%s, date(date_time)) > %s and \
+            datediff(%s, date(date_time)) <= %s  GROUP BY month(date_time)'
+    # TODO: query not returning anything!
+    cursor.execute(get_month_wise, (email, today, 0, today, 180))
+    month_wise = cursor.fetchall()
     if request.method == 'GET':
-        email = session['email']
-        cursor = conn.cursor()
-        # total amount in past year
-        year = datetime.year
-        getTotal = 'SELECT sum(calc_price) as total_spending FROM purchases WHERE \
-            email = %s and year(date_time) = %s'
-        cursor.execute(getTotal, (email, year))
-        total_spending = cursor.fetchone()['total_spending']
-        # month wise amount in past 6 months
-        getMonthWise = 'SELECT month(date_time) as month, sum(calc_price) as month_spending \
-            FROM purchases WHERE email = %s and datetdiff(%s, date_time) > 0 and \
-                datetdiff(%s, date_time) <= 180  GROUP BY month(date_time)'
-        cursor.execute(getMonthWise, (email, datetime.now()))
-        month_wise_fetch = cursor.fetchall()
-        month_wise = []
-        month_start = month - 5 if month > 5 else month
-        month_end = datetime.month
-        for month in range(month_start, month_end):
-            for each in month_wise_fetch:
-                if each['month'] == month:
-                    month_wise.append([month, each['month_spending']])
-                else:
-                    month_wise.append([month, 0])
-        return render_template('custTrackSpending.html', year=year, \
-                            total_spending=total_spending, month_wise=month_wise)
-    else: # TODO
-        return
-
+        search = None
+    else:
+        # fetch data
+        start = request.form['start']
+        end = request.form['end']
+        cursor.execute(get_month_wise, (email, today, start, today, end))
+        search = cursor.fetchall()
+    cursor.close()
+    return render_template('custTrackSpending.html', year=year, \
+                        total_spending=total_spending, month_wise=month_wise, search=search)
 
 
         

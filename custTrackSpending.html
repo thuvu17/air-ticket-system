@@ -42,7 +42,25 @@
             <input type="submit" value = "Search"/>
         </form>
     </div>
-    
+    {% if search %}
+    <div>
+        <style type="text/css">
+            table, th, td{
+                border: 1px solid black;
+            }
+        </style>
+        <table>
+            <th>Month</th>
+            <th>Total spending</th>
+            {% for row in search %}
+                <tr>
+                    <td>{{row[0]}}</td>
+                    <td>{{row[1]}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
     <br>
     <a href="/homeCust">Go back</a>
 </body>
