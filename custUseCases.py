@@ -28,7 +28,7 @@ def homeCust():
     cursor.execute(query, (email))
     first_name = cursor.fetchone()['first_name']
     # get purchased flights that already done
-    getDoneFlights = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime \
+    getDoneFlights = 'SELECT airline_name, flight_num, arrive_datetime, dept_datetime, ticket_id \
         FROM flight natural join ticket natural join purchases \
             WHERE email = %s and dept_datetime < %s ORDER BY dept_datetime'
     cursor.execute(getDoneFlights, (email, datetime.now()))
@@ -118,12 +118,13 @@ def custPurchase():
     email = session['email']
     referrer = request.headers.get('Referer')
     cursor = conn.cursor()
+    # get flight info
+    airline_name = request.form['airline_name']
+    flight_num = request.form['flight_num']
+    dept_datetime = request.form['dept_datetime']
     # getting all the information for purchase
     if 'custPurchase' not in referrer:
         # get flight information 
-        airline_name = request.form['airline_name']
-        flight_num = request.form['flight_num']
-        dept_datetime = request.form['dept_datetime']
         query = 'SELECT dept_airport, arrive_airport, arrive_datetime, base_price FROM flight WHERE \
             airline_name = %s and flight_num = %s and dept_datetime = %s'
         cursor.execute(query, (airline_name, flight_num, dept_datetime))
@@ -151,9 +152,6 @@ def custPurchase():
                                 additional_price=additional_price, final_price=final_price, numTickets=numTickets)
     # process purchase
     else:
-        airline_name = request.form['airline_name']
-        flight_num = request.form['flight_num']
-        dept_datetime = request.form['dept_datetime']
         final_price = float(request.form['final_price'])
         numTickets = int(request.form['numTickets'])
         # payment information
@@ -173,6 +171,7 @@ def custPurchase():
         data = cursor.fetchone()
         error = None
         if data:
+            cursor.close()
             error = "You already booked this ticket!"
             return render_template('custPurchaseConfirm.html', error=error)
         else:
@@ -197,6 +196,27 @@ def custPurchase():
             conn.commit()
             cursor.close()
             return render_template('custPurchaseConfirm.html', error=error)
+        
+
+# CUSTOMER RATE
+@app.route('/custRate', methods=['POST'])
+def custRate():
+    email = session['email']
+    cursor = conn.cursor()
+    referrer = request.headers.get('Referer')
+    ticket_id = request.form['ticket_id']
+    if 'homeCust' in referrer:
+        return render_template('custRate.html', ticket_id=ticket_id)
+    else:
+        # ADD RATING AND COMMENT
+        rating = request.form['rating']
+        comment = request.form['comment']
+        query = 'UPDATE purchases SET rating = %s, comment = %s WHERE email = %s and ticket_id = %s'
+        cursor.execute(query, (rating, comment, email, ticket_id))
+        conn.commit()
+        cursor.close()
+        return render_template('custRateConfirm.html')
+
 
 
 

@@ -20,12 +20,19 @@
                 <th>Flight number</th>
                 <th>Arrival date</th>
                 <th>Departure date</th>
+                <th>Give ratings</th>
                 {% for row in done_flights %}
                     <tr>
                         <td>{{row['airline_name']}}</td>
                         <td>{{row['flight_num']}}</td>
                         <td>{{row['arrive_datetime']}}</td>
                         <td>{{row['dept_datetime']}}</td>
+                        <td>
+                            <form action="/custRate" method="POST">
+                                <input type="hidden" name="ticket_id" value="{{row['ticket_id']}}">
+                                <input type="submit" value = "Rate"/>
+                            </form>
+                        </td>
                     </tr>
                 {% endfor %}
             </table>
