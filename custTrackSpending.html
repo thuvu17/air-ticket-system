@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Ticket Reservation System | Track Spending</title>
+</head>
+<body>
+    <h1>Track My Spending</h1>
+    <h2>Annual total spending</h2>
+    <p>In {{year}}, you have spent a total of: ${{total_spending}}</p>
+    <h2>Monthly spending</h2>
+        <style type="text/css">
+            table, th, td{
+                border: 1px solid black;
+            }
+        </style>
+        <table>
+            <th>Month</th>
+            <th>Total spending</th>
+            {% for row in month_wise %}
+                <tr>
+                    <td>{{row['month']}}</td>
+                    <td>{{row['month_spending]}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+    <br>
+    <a href="/homeCust">Go back</a>
+</body>
+</html>
