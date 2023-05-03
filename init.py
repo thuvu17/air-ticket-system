@@ -25,24 +25,17 @@ def hello():
     return render_template('index.html')
 
 
-# GOODBYE
-@app.route('/goodbye')
-def goodbye():
-    return redirect('/')
-
-
 # LOGOUT STAFF
 @app.route('/logoutStaff')
 def logoutStaff():
     session.pop('username')
-    return redirect(url_for('goodbye'))
-
+    return redirect(url_for('/'))
 
 # LOGOUT CUSTOMER
 @app.route('/logoutCust')
 def logoutCust():
     session.pop('email')
-    return redirect(url_for('goodbye'))
+    return redirect(url_for('/'))
 
 
 # LOGIN STAFF
