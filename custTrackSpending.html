@@ -11,6 +11,7 @@
     <h2>Annual total spending</h2>
     <p>In {{year}}, you have spent a total of: ${{total_spending}}</p>
     <h2>Monthly spending</h2>
+    <div>
         <style type="text/css">
             table, th, td{
                 border: 1px solid black;
@@ -21,12 +22,27 @@
             <th>Total spending</th>
             {% for row in month_wise %}
                 <tr>
-                    <td>{{row['month']}}</td>
-                    <td>{{row['month_spending]}}</td>
+                    <td>{{row[0]}}</td>
+                    <td>{{row[1]}}</td>
                 </tr>
             {% endfor %}
         </table>
-
+    </div>
+    <h3>Specify the range of search</h3>
+    <div>
+        <form action="/custTrackSpending" method="POST">
+            <p>
+                <label for="start">Start date</label>
+                <input type="date" name = "start"/>
+            </p>
+            <p>
+                <label for="end">End date</label>
+                <input type="date" name = "end"/>
+            </p>
+            <input type="submit" value = "Search"/>
+        </form>
+    </div>
+    
     <br>
     <a href="/homeCust">Go back</a>
 </body>
