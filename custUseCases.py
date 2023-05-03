@@ -247,8 +247,8 @@ def custTrackSpending():
         cursor.execute(get_month_wise, (email, today, start, today, end))
         search = cursor.fetchall()
     cursor.close()
-    return render_template('custTrackSpending.html', year=year, \
-                        total_spending=total_spending, month_wise=month_wise, search=search)
+    return render_template('custTrackSpending.html', year=year, total_spending=total_spending, \
+                           month_wise=month_wise, search=search)
 
 
         
