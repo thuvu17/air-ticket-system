@@ -1,50 +1,43 @@
 # This file contains staff homepage and all use cases
 
-#Import Flask Library
-from flask import Flask, render_template, request, session, url_for, redirect
+# Import Flask Library
+from flask import Flask, render_template, request, session
 from datetime import datetime, timedelta
-import pymysql.cursors
+from setup import app, conn
 
-# Initialize the app from Flask
-app = Flask(__name__)
 
-# Configure MySQL
-conn = pymysql.connect(host='localhost',
-                       port= 8889,
-                       user='root',
-                       password='root',
-                       db='air_ticket_reservation',
-                       charset='utf8mb4',
-                       cursorclass=pymysql.cursors.DictCursor)
+# HELPER FUNCTION
+def get_staff_info(cursor, attribute, username):
+    """
+    take in the attribute(string) and return value from airline_staff
+    with the matching username
+    """
+    query = "SELECT {} FROM airline_staff WHERE username = %s".format(attribute)
+    cursor.execute(query, (username))
+    return cursor.fetchone()[attribute]
 
 
 # STAFF USE CASES
-# Staff homepage
-@app.route('/homeStaff')
-def homeStaff():
+# STAFF HOMEPAGE
+@app.route('/home_staff', methods=['POST', 'GET'])
+def home_staff():
     username = session['username']
     cursor = conn.cursor()
-    # get first name for welcome message
-    query = 'SELECT first_name FROM airline_staff WHERE username = %s'
-    cursor.execute(query, (username))
-    first_name = cursor.fetchone()[0]
-    # get airline name
-    query1 = 'SELECT airline_name FROM airline_staff WHERE username = %s'
-    cursor.execute(query1, (username))
-    airline_name = cursor.fetchone()[0]
+    # get staff first name and airline name
+    first_name = get_staff_info(cursor, 'first_name', username)
+    airline_name = get_staff_info(cursor, 'airline_name', username)
     # display flights in the next 30 days
     # TODO: query get flight_num, dept and arrival city/airport/datetime, status within 30 days
-    getFlights = 'SELECT flight_num, dept_city, dept_airport, dept_datetime, arrive_city,\
-         arrive_airport, arrive_datetime FROM flight natural join airport WHERE airline_name = %s'
-    cursor.execute(getFlights, (airline_name))
-    flights_fetch = cursor.fetchall()
-    flights = []
-    for each in flights_fetch:
-        flights.append({"flight_num":each[0], "dept_city":each[1], "dept_airport":each[2],\
-                        "dept_datetime":each[3], "arrive_city":each[4], "arrive_airport":each[5],\
-                            "arrive_datetime":each[6]})
+
+    get_flights = 'SELECT flight_num, dept.city as dept_city, dept.name as dept_airport, dept_datetime, \
+        arr.city as arrive_city, arr.name as arrive_airport, arrive_datetime \
+            FROM airport dept, flight, airport arr WHERE arrive_airport = arr.airport_code \
+                and dept_airport = dept.airport_code and airline_name = %s'
+    cursor.execute(get_flights, (airline_name))
+    flights = cursor.fetchall()
     cursor.close()
-    return render_template('homeStaff.html', first_name=first_name, flights=flights)
+    return render_template('home_staff.html', first_name=first_name, flights=flights)
+
 
 # Staff add airplane
 @app.route('/staffAddAirplane', methods=['GET', 'POST'])
