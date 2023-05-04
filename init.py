@@ -15,13 +15,13 @@ def hello():
 @app.route('/logout_staff')
 def lougout_staff():
     session.pop('username')
-    return redirect(url_for('/'))
+    return redirect('/')
 
 # LOGOUT CUSTOMER
 @app.route('/logout_cust')
 def logout_cust():
     session.pop('email')
-    return redirect(url_for('/'))
+    return redirect('/')
 
 
 # LOGIN STAFF
