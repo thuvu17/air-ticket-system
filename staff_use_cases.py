@@ -100,8 +100,8 @@ def staff_view_ratings():
     avg_rating = cursor.fetchone()['avg_rating']
     # get list of all comments and customer name
     get_comments = 'SELECT first_name, last_name, rating, comment \
-        FROM purchases natural join customer natural join ticket\
-        WHERE airline_name = %s and flight_num = %s and dept_datetime = %s'
+        FROM purchases natural join ticket WHERE airline_name = %s and flight_num = %s \
+            and dept_datetime = %s and comment is not NULL'
     cursor.execute(get_comments, (airline_name, flight_num, dept_datetime))
     comments_fetch = cursor.fetchall()
     comments = []
