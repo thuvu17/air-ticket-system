@@ -7,8 +7,9 @@
     <title>Air Ticket Reservation System | Airline Staff Home Page</title>
 </head>
 <body>
-    <h1>Welcome, {{first_name}}</h1>
-    <h2>My Upcoming Flights</h2>
+    <h1>{{airline_name}} Airline</h1>
+    <h2>Welcome, {{first_name}}</h2>
+    <h3>My Upcoming Flights</h3>
     {% if flights %}
         <p>Your flight schedule in the next 30 days</p>
         <div>
@@ -44,7 +45,7 @@
     {% else %}
         <p>You have no flight in the next 30 days</p>
     {% endif %}
-    <h2>Workspace</h2>
+    <h3>Workspace</h3>
 	<p><a href="/staffCreateFlights">Create New Flights</a></p>
     <p><a href="/staffAddAirplane">Add Airplane</a></p>
     <p><a href="/staffAddAirport">Add Airport</a></p>

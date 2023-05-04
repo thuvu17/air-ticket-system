@@ -41,13 +41,13 @@ def home_staff():
     first_name = get_staff_info(cursor, 'first_name', username)
     airline_name = get_staff_info(cursor, 'airline_name', username)
     today = datetime.now().date().strftime("%Y-%m-%d")
-    print(today)
     # display flights in the next 30 days
-    condition = "airline_name = '{}' and datediff('{}', date(dept_datetime)) > 0 and \
-        datediff('{}', date(dept_datetime)) <= 30".format(airline_name, today, today)
+    condition = "airline_name = '{}' and datediff('{}', date(dept_datetime)) < 0 and \
+        datediff('{}', date(dept_datetime)) >= 30".format(airline_name, today, today)
     flights = get_flight_info(cursor, condition)
     cursor.close()
-    return render_template('home_staff.html', first_name=first_name, flights=flights)
+    return render_template('home_staff.html', airline_name=airline_name, \
+                           first_name=first_name, flights=flights)
 
 
 # Staff add airplane
