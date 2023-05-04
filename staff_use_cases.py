@@ -80,6 +80,36 @@ def staff_view_flights():
         cursor.close()
         return render_template('staff_view_flights.html', airline_name=airline_name, \
                            all_flights=all_flights, search=search, request='POST')
+    
+
+# STAFF VIEW RATINGS
+@app.route('/staff_view_ratings', methods=['POST'])
+def staff_view_ratings():
+    """
+    default: display average rating and all comments
+    """
+    cursor = conn.cursor()
+    # get flight info
+    airline_name = request.form['airline_name']
+    flight_num = request.form['flight_num']
+    dept_datetime = request.form['dept_datetime']
+    # get avg rating
+    get_avg_rating = 'SELECT avg(rating) as avg_rating FROM purchases natural join ticket \
+        WHERE airline_name = %s and flight_num = %s and dept_datetime = %s'
+    cursor.execute(get_avg_rating, (airline_name, flight_num, dept_datetime))
+    avg_rating = cursor.fetchone()['avg_rating']
+    # get list of all comments and customer name
+    get_comments = 'SELECT first_name, last_name, rating, comment \
+        FROM purchases natural join customer natural join ticket\
+        WHERE airline_name = %s and flight_num = %s and dept_datetime = %s'
+    cursor.execute(get_comments, (airline_name, flight_num, dept_datetime))
+    comments_fetch = cursor.fetchall()
+    comments = []
+    for each in comments_fetch:
+        comments.append({'name': each['first_name'] + ' ' + each['last_name'], \
+                         'rating': each['rating'], 'comment': each['comment']})
+    return render_template('staff_view_ratings.html', airline_name=airline_name, \
+                           flight_num=flight_num, avg_rating=avg_rating, comments=comments)
 
 
 # Staff add airplane
