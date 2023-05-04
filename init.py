@@ -12,7 +12,7 @@ def hello():
 
 
 # LOGOUT STAFF
-@app.route('/lougout_staff')
+@app.route('/logout_staff')
 def lougout_staff():
     session.pop('username')
     return redirect(url_for('/'))
