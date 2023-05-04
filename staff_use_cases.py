@@ -50,6 +50,66 @@ def home_staff():
                            first_name=first_name, flights=flights)
 
 
+	
+	
+	
+#Session Management
+#Authenticates the login
+@app.route('/loginAuth', methods=['GET', 'POST'])
+def loginAuth():
+	#grabs information from the forms
+	username = request.form['username']
+	password = request.form['password']
+
+	#cursor used to send queries
+	cursor = conn.cursor()
+	#executes query
+	query = 'SELECT * FROM airline_staff WHERE username = %s and password = %s'
+	cursor.execute(query, (username, password))
+	#stores the results in a variable
+	data = cursor.fetchone()
+	#use fetchall() if you are expecting more than 1 data row
+	cursor.close()
+	error = None
+	if(data):
+		#creates a session for the the user
+		#session is a built in
+		session['username'] = username
+		return redirect(url_for('homeStaff'))
+	else:
+		#returns an error message to the html page
+		error = 'Invalid login or username'
+		return render_template('login.html', error=error)
+
+#Authenticates the register
+@app.route('/registerAuth', methods=['GET', 'POST'])
+def registerAuth():
+	#grabs information from the forms
+	username = request.form['username']
+	password = request.form['password']
+
+	#cursor used to send queries
+	cursor = conn.cursor()
+	#executes query
+	query = 'SELECT * FROM airline_staff WHERE username = %s'
+	cursor.execute(query, (username))
+	#stores the results in a variable
+	data = cursor.fetchone()
+	#use fetchall() if you are expecting more than 1 data row
+	error = None
+	if(data):
+		#If the previous query returns data, then user exists
+		error = "This user already exists"
+		return render_template('registerStaff.html', error = error)
+	else:
+		ins = 'INSERT INTO airline_staff VALUES(%s, %s)'
+		cursor.execute(ins, (username, password))
+		conn.commit()
+		cursor.close()
+		return render_template('homeStaff.html')
+
+
+
 # STAFF VIEW FLIGHTS
 @app.route('/staff_view_flights', methods=['POST', 'GET'])
 def staff_view_flights():
