@@ -214,7 +214,7 @@ def cust_track_spending():
     cursor = conn.cursor()
     # total amount in past year
     year = datetime.now().year
-    today = datetime.now().date
+    today = datetime.now().date().strftime("%Y-%m-%d")
     get_total = 'SELECT sum(calc_price) as total_spending FROM purchases WHERE \
         email = %s and year(date_time) = %s'
     cursor.execute(get_total, (email, year))
@@ -222,8 +222,7 @@ def cust_track_spending():
     # month wise amount in past 6 months
     get_month_wise = 'SELECT month(date_time) as month, sum(calc_price) as month_spending \
         FROM purchases WHERE email = %s and datediff(%s, date(date_time)) > %s and \
-            datediff(%s, date(date_time)) <= %s  GROUP BY month(date_time)'
-    # TODO: query not returning anything!
+            datediff(%s, date(date_time)) <= %s GROUP BY month(date_time)'
     cursor.execute(get_month_wise, (email, today, 0, today, 180))
     month_wise = cursor.fetchall()
     if request.method == 'GET':
@@ -232,11 +231,13 @@ def cust_track_spending():
         # fetch data
         start = request.form['start']
         end = request.form['end']
-        cursor.execute(get_month_wise, (email, today, start, today, end))
+        search_query = 'SELECT month(date_time) as month, sum(calc_price) as month_spending \
+        FROM purchases WHERE email = %s and date(date_time) >= %s and date(date_time) <= %s \
+            GROUP BY month(date_time)'
+        cursor.execute(search_query, (email, start, end))
         search = cursor.fetchall()
     cursor.close()
     return render_template('cust_track_spending.html', year=year, total_spending=total_spending, \
                            month_wise=month_wise, search=search)
-
 
         

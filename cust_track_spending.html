@@ -22,8 +22,8 @@
             <th>Total spending</th>
             {% for row in month_wise %}
                 <tr>
-                    <td>{{row[0]}}</td>
-                    <td>{{row[1]}}</td>
+                    <td>{{row['month']}}</td>
+                    <td>{{row['month_spending']}}</td>
                 </tr>
             {% endfor %}
         </table>
@@ -55,8 +55,8 @@
             <th>Total spending</th>
             {% for row in search %}
                 <tr>
-                    <td>{{row[0]}}</td>
-                    <td>{{row[1]}}</td>
+                    <td>{{row['month']}}</td>
+                    <td>{{row['month_spending']}}</td>
                 </tr>
             {% endfor %}
         </table>
