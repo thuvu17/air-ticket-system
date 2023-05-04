@@ -13,7 +13,8 @@
             table, th, td{
                 border: 1px solid black;
             }
-            td {
+            th, td {
+            padding: 3px;
             text-align: center;
             }
         </style>
@@ -76,11 +77,6 @@
     {% if search %}
     <div>
         <h3>Search result</h3>
-        <style type="text/css">
-            table, th, td{
-                border: 1px solid black;
-            }
-        </style>
         <table>
             <th>Flight number</th>
             <th>Origin city</th>
