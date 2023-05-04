@@ -9,6 +9,7 @@
 <body>
     <h1>Welcome {{first_name}}</h1>
     <h2>My Upcoming Flights</h2>
+    <p>Your flight schedule in the next 30 days</p>
     <div>
         <style type="text/css">
             table, th, td{
@@ -33,16 +34,7 @@
                     <td>{{row['arrive_city']}}</td>
                     <td>{{row['arrive_airport']}}</td>
                     <td>{{row['arrive_datetime']}}</td>
-                    <td>
-                        <form action="/staffChangeStatus" method="POST">
-                            <select id="newStatus" name="newStatus">
-                                <option value="on_time">On-time</option>
-                                <option value="delay">Delayed</option>
-                                <option value="canceled">Canceled</option>
-                                <option value="no_change" selected>{{row['status']}}</option>
-                            </select></td></td>
-                            <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
-                            <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
+                    <td>{{row['status']}}</td>
                 </tr>
             {% endfor %}
 	</table>

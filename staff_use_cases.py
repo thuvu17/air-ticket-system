@@ -17,6 +17,20 @@ def get_staff_info(cursor, attribute, username):
     return cursor.fetchone()[attribute]
 
 
+def get_flight_info(cursor, condition):
+    """
+    get flight info including: flight_num, dept and arrive_city + airport + datetime, status
+    with corresponding condition(string)
+    """
+    where_clause = " and {}".format(condition)
+    query = 'SELECT flight_num, dept.city as dept_city, dept.name as dept_airport, dept_datetime, \
+        arr.city as arrive_city, arr.name as arrive_airport, arrive_datetime, status \
+            FROM airport dept, flight, airport arr WHERE arrive_airport = arr.airport_code \
+                and dept_airport = dept.airport_code' + where_clause
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
 # STAFF USE CASES
 # STAFF HOMEPAGE
 @app.route('/home_staff', methods=['POST', 'GET'])
@@ -26,15 +40,12 @@ def home_staff():
     # get staff first name and airline name
     first_name = get_staff_info(cursor, 'first_name', username)
     airline_name = get_staff_info(cursor, 'airline_name', username)
+    today = datetime.now().date().strftime("%Y-%m-%d")
+    print(today)
     # display flights in the next 30 days
-    # TODO: query get flight_num, dept and arrival city/airport/datetime, status within 30 days
-
-    get_flights = 'SELECT flight_num, dept.city as dept_city, dept.name as dept_airport, dept_datetime, \
-        arr.city as arrive_city, arr.name as arrive_airport, arrive_datetime \
-            FROM airport dept, flight, airport arr WHERE arrive_airport = arr.airport_code \
-                and dept_airport = dept.airport_code and airline_name = %s'
-    cursor.execute(get_flights, (airline_name))
-    flights = cursor.fetchall()
+    condition = "airline_name = '{}' and datediff('{}', date(dept_datetime)) > 0 and \
+        datediff('{}', date(dept_datetime)) <= 30".format(airline_name, today, today)
+    flights = get_flight_info(cursor, condition)
     cursor.close()
     return render_template('home_staff.html', first_name=first_name, flights=flights)
 
