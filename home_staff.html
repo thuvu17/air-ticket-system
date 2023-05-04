@@ -7,39 +7,43 @@
     <title>Air Ticket Reservation System | Airline Staff Home Page</title>
 </head>
 <body>
-    <h1>Welcome {{first_name}}</h1>
+    <h1>Welcome, {{first_name}}</h1>
     <h2>My Upcoming Flights</h2>
-    <p>Your flight schedule in the next 30 days</p>
-    <div>
-        <style type="text/css">
-            table, th, td{
-                border: 1px solid black;
-            }
-        </style>
-        <table>
-            <th>Flight number</th>
-            <th>Origin city</th>
-            <th>Origin airport</th>
-            <th>Departure date</th>
-            <th>Destination city</th>
-            <th>Destination airport</th>
-            <th>Arrival date</th>
-            <th>Status</th>
-            {% for row in flights %}
-                <tr>
-                    <td>{{row['flight_num']}}</td>
-                    <td>{{row['dept_city']}}</td>
-                    <td>{{row['dept_airport']}}</td>
-                    <td>{{row['dept_datetime']}}</td>
-                    <td>{{row['arrive_city']}}</td>
-                    <td>{{row['arrive_airport']}}</td>
-                    <td>{{row['arrive_datetime']}}</td>
-                    <td>{{row['status']}}</td>
-                </tr>
-            {% endfor %}
-	</table>
-	<input type="submit" value ="Change"/>
-    </div>
+    {% if flights %}
+        <p>Your flight schedule in the next 30 days</p>
+        <div>
+            <style type="text/css">
+                table, th, td{
+                    border: 1px solid black;
+                }
+            </style>
+            <table>
+                <th>Flight number</th>
+                <th>Origin city</th>
+                <th>Origin airport</th>
+                <th>Departure date</th>
+                <th>Destination city</th>
+                <th>Destination airport</th>
+                <th>Arrival date</th>
+                <th>Status</th>
+                {% for row in flights %}
+                    <tr>
+                        <td>{{row['flight_num']}}</td>
+                        <td>{{row['dept_city']}}</td>
+                        <td>{{row['dept_airport']}}</td>
+                        <td>{{row['dept_datetime']}}</td>
+                        <td>{{row['arrive_city']}}</td>
+                        <td>{{row['arrive_airport']}}</td>
+                        <td>{{row['arrive_datetime']}}</td>
+                        <td>{{row['status']}}</td>
+                    </tr>
+                {% endfor %}
+        </table>
+        <input type="submit" value ="Change"/>
+        </div>
+    {% else %}
+        <p>You have no flight in the next 30 days</p>
+    {% endif %}
     <h2>Workspace</h2>
 	<p><a href="/staffCreateFlights">Create New Flights</a></p>
     <p><a href="/staffAddAirplane">Add Airplane</a></p>
