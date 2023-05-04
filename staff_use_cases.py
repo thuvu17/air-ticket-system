@@ -50,6 +50,38 @@ def home_staff():
                            first_name=first_name, flights=flights)
 
 
+# STAFF VIEW FLIGHTS
+@app.route('/staff_view_flights', methods=['POST', 'GET'])
+def staff_view_flights():
+    """
+    default: display all flights by that airline
+    has an option for staff to search by range
+    flight info = default + average rating + /link to view all customers + comments
+    """
+    username = session['username']
+    cursor = conn.cursor()
+    # get all flights run by this airline
+    airline_name = get_staff_info(cursor, 'airline_name', username)
+    condition = "airline_name = '{}'".format(airline_name)
+    all_flights = get_flight_info(cursor, condition)
+    # display flights in the next 30 days
+    condition = "airline_name = '{}'".format(airline_name)
+    if request.method == 'GET':
+        cursor.close()
+        return render_template('staff_view_flights.html', airline_name=airline_name, \
+                           all_flights=all_flights, request='GET')
+    # display flights within specified range
+    else:
+        start = request.form['start']
+        end = request.form['end']
+        search_condition = "airline_name = '{}' and date(dept_datetime) >= '{}' \
+            and date(dept_datetime) <= '{}'".format(airline_name, start, end)
+        search = get_flight_info(cursor, search_condition)
+        cursor.close()
+        return render_template('staff_view_flights.html', airline_name=airline_name, \
+                           all_flights=all_flights, search=search, request='POST')
+
+
 # Staff add airplane
 @app.route('/staffAddAirplane', methods=['GET', 'POST'])
 def staffAddAirplane():

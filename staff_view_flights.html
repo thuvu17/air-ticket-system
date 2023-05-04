@@ -1,0 +1,135 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Air Ticket Reservation System | View Flights</title>
+    </head>
+<body>
+    <h1>{{airline_name}} Airline</h1>
+    <h2>All flights</h2>
+    <div>
+        <style type="text/css">
+            table, th, td{
+                border: 1px solid black;
+            }
+            td {
+            text-align: center;
+            }
+        </style>
+        <table>
+            <th>Flight number</th>
+            <th>Origin city</th>
+            <th>Origin airport</th>
+            <th>Departure date</th>
+            <th>Destination city</th>
+            <th>Destination airport</th>
+            <th>Arrival date</th>
+            <th>Status</th>
+            <th>Customers</th>
+            <th>Ratings and comments</th>
+            {% for row in all_flights %}
+                <tr>
+                    <td>{{row['flight_num']}}</td>
+                    <td>{{row['dept_city']}}</td>
+                    <td>{{row['dept_airport']}}</td>
+                    <td>{{row['dept_datetime']}}</td>
+                    <td>{{row['arrive_city']}}</td>
+                    <td>{{row['arrive_airport']}}</td>
+                    <td>{{row['arrive_datetime']}}</td>
+                    <td>{{row['status']}}</td>
+                    <td>
+                        <form action="/staff_view_customers" method="POST">
+                            <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
+                            <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
+                            <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
+                            <input type="submit" value = "View"/>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/staff_view_ratings" method="POST">
+                            <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
+                            <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
+                            <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
+                            <input type="submit" value = "View"/>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    <br>
+    <h2>Search flights in range</h2>
+    <div>
+        <form action="/staff_view_flights" method="POST">
+            <p>
+                <label for="start">Start date</label>
+                <input type="date" name = "start"/>
+            </p>
+            <p>
+                <label for="end">End date</label>
+                <input type="date" name = "end"/>
+            </p>
+            <input type="submit" value = "Search"/>
+        </form>
+    </div>
+    {% if request == 'POST' %}
+    {% if search %}
+    <div>
+        <h3>Search result</h3>
+        <style type="text/css">
+            table, th, td{
+                border: 1px solid black;
+            }
+        </style>
+        <table>
+            <th>Flight number</th>
+            <th>Origin city</th>
+            <th>Origin airport</th>
+            <th>Departure date</th>
+            <th>Destination city</th>
+            <th>Destination airport</th>
+            <th>Arrival date</th>
+            <th>Status</th>
+            <th>Customers</th>
+            <th>Ratings and comments</th>
+            {% for row in search %}
+                <tr>
+                    <td>{{row['flight_num']}}</td>
+                    <td>{{row['dept_city']}}</td>
+                    <td>{{row['dept_airport']}}</td>
+                    <td>{{row['dept_datetime']}}</td>
+                    <td>{{row['arrive_city']}}</td>
+                    <td>{{row['arrive_airport']}}</td>
+                    <td>{{row['arrive_datetime']}}</td>
+                    <td>{{row['status']}}</td>
+                    <td>
+                        <form action="/staff_view_customers" method="POST">
+                            <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
+                            <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
+                            <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
+                            <input type="submit" value = "View"/>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/staff_view_ratings" method="POST">
+                            <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
+                            <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
+                            <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
+                            <input type="submit" value = "View"/>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+    </table>
+    </div>
+    {% else %}
+        <p>No flight found within specified range</p>
+    {% endif %}
+    {% endif %}
+    <br><br>
+    <p><a href="/home_staff">Back to homepage</a></p>
+
+</body>
+
+
+</html>
