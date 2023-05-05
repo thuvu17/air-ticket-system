@@ -4,6 +4,7 @@
 from flask import Flask, render_template, request, session
 from datetime import datetime, timedelta
 from setup import app, conn
+from staff_use_cases import get_flight_info
 
 
 # CUSTOMER HOMEPAGE
@@ -59,12 +60,6 @@ def cust_cancel_trip():
 
 
 # CUSTOMER SEARCH FLIGHTS
-search_query = 'SELECT airline_name, flight_num, dept_airport, arrive_airport, dept_datetime, arrive_datetime \
-    FROM (SELECT airline_name, flight_num, dept_airport, arrive_airport, dept_datetime, arrive_datetime \
-        FROM flight natural join airport natural join airplane WHERE date(dept_datetime) = "{}" and \
-            arrive_airport = airport_code and name = "{}" and city = "{}") sub natural join airport \
-                WHERE dept_airport = airport_code and name = "{}" and city = "{}"'
-
 @app.route('/cust/search_flight', methods=['GET', 'POST'])
 def cust_search_flight():
     if request.method == 'POST':
@@ -76,24 +71,22 @@ def cust_search_flight():
         dest_city = request.form['dest_city']
         dest_airport = request.form['dest_airport']
         dept_date = request.form['dept_date']
+        # condition for query
+        condition = "dept.city = '{}' and dept.name = '{}' and \
+                arr.city = '{}' and arr.name = '{}' and date(dept_datetime) = '{}'"
         # if one way
         if one_or_round == "one":
-            search = search_query.format(dept_date, dest_airport, dest_city, source_airport, source_city)
-            cursor.execute(search)
-            one_flights = cursor.fetchall()
+            one_condition = condition.format(source_city, source_airport, dest_city, dest_airport, dept_date)
+            one_flights = get_flight_info(cursor, one_condition)
             cursor.close()
             return render_template('/cust/one_way_result.html', one_flights=one_flights)
         # if round trip
         else:
             return_date = request.form['return_date']
-            search_forward = search_query.format(dept_date, dest_airport, dest_city, source_airport, source_city)
-            search_return = search_query.format(return_date, source_airport, source_city, dest_airport, dest_city)
-            # search forward flights
-            cursor.execute(search_forward)
-            forward_flights = cursor.fetchall()
-            # search return flights
-            cursor.execute(search_return)
-            return_flights = cursor.fetchall()
+            forward_condition = condition.format(source_city, source_airport, dest_city, dest_airport, dept_date)
+            return_condition = condition.format(dest_city, dest_airport, source_city, source_airport, return_date)
+            forward_flights = get_flight_info(cursor, forward_condition)
+            return_flights = get_flight_info(cursor, return_condition)
             cursor.close()
             return render_template('/cust/round_result.html', forward_flights=forward_flights, return_flights=return_flights)
     else:

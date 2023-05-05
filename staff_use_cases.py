@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from setup import app, conn
 
 
-# HELPER FUNCTION
+# HELPER FUNCTIONS
 # get staff info
 def get_staff_info(cursor, attribute, username):
     """
@@ -17,6 +17,7 @@ def get_staff_info(cursor, attribute, username):
     cursor.execute(query, (username))
     return cursor.fetchone()[attribute]
 
+
 # get flight info
 def get_flight_info(cursor, condition):
     """
@@ -24,12 +25,14 @@ def get_flight_info(cursor, condition):
     with corresponding condition(string)
     """
     where_clause = " and {}".format(condition)
-    query = 'SELECT flight_num, dept.city as dept_city, dept.name as dept_airport, dept_datetime, \
-        arr.city as arrive_city, arr.name as arrive_airport, arrive_datetime, status \
-        FROM airport dept, flight, airport arr WHERE arrive_airport = arr.airport_code \
+    query = 'SELECT flight.airline_name as airline, flight_num, dept.city as dept_city, \
+        dept.name as dept_airport, dept_datetime, arr.city as arrive_city, \
+        arr.name as arrive_airport, arrive_datetime, status FROM airport dept, \
+        flight, airport arr WHERE arrive_airport = arr.airport_code \
         and dept_airport = dept.airport_code' + where_clause
     cursor.execute(query)
     return cursor.fetchall()
+
 
 # get all <attribute> from <relation>
 def get_all(cursor, attribute, relation, condition = ''):

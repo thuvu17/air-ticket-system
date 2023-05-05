@@ -18,20 +18,24 @@
             }
         </style>
         <table>
-            <th>Airline</th>
             <th>Flight number</th>
+            <th>Origin city</th>
             <th>Origin airport</th>
-            <th>Destination airport</th>
             <th>Departure date</th>
+            <th>Destination city</th>
+            <th>Destination airport</th>
             <th>Arrival date</th>
+            <th>Status</th>
             {% for row in one_flights %}
                 <tr>
-                    <td>{{row['airline_name']}}</td>
                     <td>{{row['flight_num']}}</td>
+                    <td>{{row['dept_city']}}</td>
                     <td>{{row['dept_airport']}}</td>
-                    <td>{{row['arrive_airport']}}</td>
                     <td>{{row['dept_datetime']}}</td>
+                    <td>{{row['arrive_city']}}</td>
+                    <td>{{row['arrive_airport']}}</td>
                     <td>{{row['arrive_datetime']}}</td>
+                    <td>{{row['status']}}</td>
                 </tr>
             {% endfor %}
         </table>

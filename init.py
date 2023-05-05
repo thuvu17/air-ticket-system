@@ -2,9 +2,11 @@
 from flask import Flask, render_template, request, session, url_for, redirect
 from datetime import datetime, timedelta
 import pymysql.cursors
+import hashlib
 # Import use cases
 import cust_use_cases
 import staff_use_cases
+from staff_use_cases import get_flight_info
 from setup import app, conn
 
 
@@ -61,10 +63,11 @@ def login_auth_staff():
     # grabs information from the forms
     username = request.form['username']
     password = request.form['password']
+    encrypted = hashlib.md5(password)
     # executes query
     cursor = conn.cursor()
     query = 'SELECT * FROM airline_staff WHERE username = %s and password = %s'
-    cursor.execute(query, (username, password))
+    cursor.execute(query, (username, encrypted))
     # stores the results in a variable
     data = cursor.fetchone()
     cursor.close()
@@ -85,10 +88,11 @@ def login_auth_cust():
     # grabs information from the forms
     email = request.form['email']
     password = request.form['password']
+    encrypted = hashlib.md5(password)
     # executes query
     cursor = conn.cursor()
     query = 'SELECT * FROM customer WHERE email = %s and password = %s'
-    cursor.execute(query, (email, password))
+    cursor.execute(query, (email, encrypted))
     # stores the results in a variable
     data = cursor.fetchone()
     cursor.close()
@@ -135,8 +139,9 @@ def register_auth_cust():
         error = "This account already exists"
         return render_template('register_cust.html', error=error)
     else:
+        encrypted = hashlib.md5(password)
         ins = 'INSERT INTO customer VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-        cursor.execute(ins, (email, password, first_name, last_name, building_num,
+        cursor.execute(ins, (email, encrypted, first_name, last_name, building_num,
                              street, apt_num, city, state, zip_code, passport_num, passport_exp,
                              passport_country, date_of_birth))
         conn.commit()
@@ -176,8 +181,9 @@ def register_auth_staff():
         return render_template('register_staff.html', error=error)
     else:
         # insert into airline_staff
+        encrypted = hashlib.md5(password)
         ins = 'INSERT INTO airline_staff VALUES(%s, %s, %s, %s, %s, %s)'
-        cursor.execute(ins, (username, airline_name, password,
+        cursor.execute(ins, (username, airline_name, encrypted,
                        first_name, last_name, date_of_birth))
         conn.commit()
         phone_nums = phone_num.replace(' ', '').split(',')
@@ -196,14 +202,6 @@ def register_auth_staff():
         return render_template('index.html')
 
 
-# HELPER QUERY FOR SEARCH_FLIGHT
-# This query retrieves the flight info when user put in desired departure/arrival airport name,
-# city, and datetime. Flight info including airline, flight_num, airport, and datetime
-query_for_search_flight = 'SELECT airline_name, flight_num, dept_airport, arrive_airport, dept_datetime, arrive_datetime \
-    FROM (SELECT airline_name, flight_num, dept_airport, arrive_airport, dept_datetime, arrive_datetime \
-    FROM flight natural join airport natural join airplane WHERE date(dept_datetime) = "{}" and \
-    arrive_airport = airport_code and name = "{}" and city = "{}") sub natural join airport \
-    WHERE dept_airport = airport_code and name = "{}" and city = "{}"'
 
 # VIEW PUBLIC INFO
 @app.route('/search_flight', methods=['GET', 'POST'])
@@ -217,24 +215,22 @@ def search_flight():
         dest_city = request.form['dest_city']
         dest_airport = request.form['dest_airport']
         dept_date = request.form['dept_date']
+        # condition for query
+        condition = "dept.city = '{}' and dept.name = '{}' and \
+                arr.city = '{}' and arr.name = '{}' and date(dept_datetime) = '{}'"
         # if one way
         if one_or_round == "one":
-            search = query_for_search_flight.format(dept_date, dest_airport, dest_city, source_airport, source_city)
-            cursor.execute(search)
-            one_flights = cursor.fetchall()
+            one_condition = condition.format(source_city, source_airport, dest_city, dest_airport, dept_date)
+            one_flights = get_flight_info(cursor, one_condition)
             cursor.close()
             return render_template('one_way_result.html', one_flights=one_flights)
         # if round trip
         else:
             return_date = request.form['return_date']
-            search_forward = query_for_search_flight.format(dept_date, dest_airport, dest_city, source_airport, source_city)
-            search_return = query_for_search_flight.format(return_date, source_airport, source_city, dest_airport, dest_city)
-            # search forward flights
-            cursor.execute(search_forward)
-            forward_flights = cursor.fetchall()
-            # search return flights
-            cursor.execute(search_return)
-            return_flights = cursor.fetchall()
+            forward_condition = condition.format(source_city, source_airport, dest_city, dest_airport, dept_date)
+            return_condition = condition.format(dest_city, dest_airport, source_city, source_airport, return_date)
+            forward_flights = get_flight_info(cursor, forward_condition)
+            return_flights = get_flight_info(cursor, return_condition)
             cursor.close()
             return render_template('round_result.html', forward_flights=forward_flights, return_flights=return_flights)
     else:

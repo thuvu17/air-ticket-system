@@ -1,10 +1,6 @@
 from flask import Flask
 import pymysql.cursors
 
-"""
-This file contains all the set up code for the server
-"""
-
 # Initialize the app from Flask
 app = Flask(__name__)
 

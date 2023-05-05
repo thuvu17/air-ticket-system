@@ -22,27 +22,24 @@
             <table>
                 <th>Airline</th>
                 <th>Flight number</th>
+                <th>Origin city</th>
                 <th>Origin airport</th>
-                <th>Destination airport</th>
                 <th>Departure date</th>
+                <th>Destination city</th>
+                <th>Destination airport</th>
                 <th>Arrival date</th>
-                <th>Purchase</th>
+                <th>Status</th>
                 {% for row in forward_flights %}
                     <tr>
-                        <td>{{row['airline_name']}}</td>
+                        <td>{{row['airline']}}</td>
                         <td>{{row['flight_num']}}</td>
+                        <td>{{row['dept_city']}}</td>
                         <td>{{row['dept_airport']}}</td>
-                        <td>{{row['arrive_airport']}}</td>
                         <td>{{row['dept_datetime']}}</td>
+                        <td>{{row['arrive_city']}}</td>
+                        <td>{{row['arrive_airport']}}</td>
                         <td>{{row['arrive_datetime']}}</td>
-                        <td>
-                            <form action="/cust/purchase" method="POST">
-                                <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
-                                <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
-                                <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
-                                <input type="submit" value = "Purchase"/>
-                            </form>
-                        </td>
+                        <td>{{row['status']}}</td>
                     </tr>
                 {% endfor %}
             </table>
@@ -62,27 +59,24 @@
             <table>
                 <th>Airline</th>
                 <th>Flight number</th>
+                <th>Origin city</th>
                 <th>Origin airport</th>
-                <th>Destination airport</th>
                 <th>Departure date</th>
+                <th>Destination city</th>
+                <th>Destination airport</th>
                 <th>Arrival date</th>
-                <th>Purchase</th>
+                <th>Status</th>
                 {% for row in return_flights %}
                     <tr>
-                        <td>{{row['airline_name']}}</td>
+                        <td>{{row['airline']}}</td>
                         <td>{{row['flight_num']}}</td>
+                        <td>{{row['dept_city']}}</td>
                         <td>{{row['dept_airport']}}</td>
-                        <td>{{row['arrive_airport']}}</td>
                         <td>{{row['dept_datetime']}}</td>
+                        <td>{{row['arrive_city']}}</td>
+                        <td>{{row['arrive_airport']}}</td>
                         <td>{{row['arrive_datetime']}}</td>
-                        <td>
-                            <form action="/cust/purchase" method="POST">
-                                <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
-                                <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
-                                <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
-                                <input type="submit" value = "Purchase"/>
-                            </form>
-                        </td>
+                        <td>{{row['status']}}</td>
                     </tr>
                 {% endfor %}
             </table>
