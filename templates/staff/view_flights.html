@@ -41,7 +41,7 @@
                     <td>{{row['arrive_datetime']}}</td>
                     <td>{{row['status']}}</td>
                     <td>
-                        <form action="/staff/view_customer_flights" method="POST">
+                        <form action="/staff/view_flight_customers" method="POST">
                             <input type="hidden" name="airline_name" value="{{airline_name}}">
                             <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
                             <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
@@ -77,7 +77,7 @@
     <br>
     <h2>Search flights in range</h2>
     <div>
-        <form action="/staff_view_flights" method="POST">
+        <form action="/staff/view_flights" method="POST">
             <p>
                 <label for="start">Start date</label>
                 <input type="date" name = "start"/>
@@ -116,7 +116,7 @@
                     <td>{{row['arrive_datetime']}}</td>
                     <td>{{row['status']}}</td>
                     <td>
-                        <form action="/staff/view_customer_flights" method="POST">
+                        <form action="/staff/view_flight_customers" method="POST">
                             <input type="hidden" name="airline_name" value="{{airline_name}}">
                             <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
                             <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">

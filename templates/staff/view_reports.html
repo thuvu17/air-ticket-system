@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Ticket Reservation System | View Report</title>
+</head>
+<body>
+    <h1>{{airline_name}} airline</h1>
+    <h2>View Report</h2>
+    <p>You can search total amount of tickets sold by range of date: </p>
+    <form action="/staff/view_reports" method="POST">
+        <p>
+            <label for="start">Start date</label>
+            <input type="date" name = "start" placeholder="" />
+        </p>
+        <p>
+            <label for="end">End date</label>
+            <input type="date" name = "end" placeholder="" />
+        </p>
+            <input type="submit" value = Search />
+        </form>
+        
+    {% if search %}
+        <p>From {{start}} to {{end}}, the total number of tickets sold is: {{result}}</p>
+    {% endif %}
+        
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+      <body>
+
+      <canvas id="reportChart" style="width:100%;max-width:600px"></canvas>
+
+      <script>
+      var xValues = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      var yValues = {{month_wise_report}};
+      var barColors = [];
+
+      new Chart("reportChart", {
+        type: "bar",
+        data: {
+          labels: xValues,
+          datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+          }]
+        },
+        options: {
+          legend: {display: false},
+          title: {
+            display: true,
+            text: "Monthly Tickets Sold This Year"
+          }
+        }
+      });
+      </script>
+
+
+        
+    <br><br>
+    <a href="/home_staff">Go back to homepage</a>
+
+
+
+</body>
+</html>

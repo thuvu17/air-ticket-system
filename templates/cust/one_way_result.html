@@ -34,7 +34,7 @@
                     <td>{{row['dept_datetime']}}</td>
                     <td>{{row['arrive_datetime']}}</td>
                     <td>
-                        <form action="/cust_purchase" method="POST">
+                        <form action="/cust/purchase" method="POST">
                             <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
                             <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
                             <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
@@ -48,7 +48,7 @@
         <p>No search results available.</p>
     {% endif %}
     <br>
-    <p><a href="/cust_search_flight">Back to search</a></p>
+    <p><a href="/cust/search_flight">Back to search</a></p>
     <p><a href="/home_cust">Back to homepage</a></p>
 
 </body>

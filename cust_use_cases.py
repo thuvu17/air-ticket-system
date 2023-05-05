@@ -33,7 +33,7 @@ def home_cust():
 
 
 # CUSTOMER CANCEL TRIP
-@app.route('/cust_cancel_trip', methods=['GET', 'POST'])
+@app.route('/cust/cancel_trip', methods=['GET', 'POST'])
 def cust_cancel_trip():
     cursor = conn.cursor()
     # check if flight is in more than 24 hours
@@ -42,7 +42,7 @@ def cust_cancel_trip():
     # if <= 24 hours, do not allow cancel
     if dept_datetime <= datetime.now() + timedelta(days=1):
         error = "You can only cancel flights that will take place in more than 24 hours!"
-        return render_template('cust_cancel_trip_confirm.html', error=error)
+        return render_template('cust/cancel_trip_confirm.html', error=error)
     # else, remove purchase of flight
     else:
         ticket_id = request.form['ticket_id']
@@ -54,7 +54,7 @@ def cust_cancel_trip():
         pop_ticket = 'DELETE FROM ticket WHERE ticket_id = %s'
         cursor.execute(pop_ticket, (ticket_id))
         conn.commit()
-        return render_template('cust_cancel_trip_confirm.html', error=error)
+        return render_template('cust/cancel_trip_confirm.html', error=error)
 
 
 
@@ -65,7 +65,7 @@ search_query = 'SELECT airline_name, flight_num, dept_airport, arrive_airport, d
             arrive_airport = airport_code and name = "{}" and city = "{}") sub natural join airport \
                 WHERE dept_airport = airport_code and name = "{}" and city = "{}"'
 
-@app.route('/cust_search_flight', methods=['GET', 'POST'])
+@app.route('/cust/search_flight', methods=['GET', 'POST'])
 def cust_search_flight():
     if request.method == 'POST':
         cursor = conn.cursor()
@@ -82,7 +82,7 @@ def cust_search_flight():
             cursor.execute(search)
             one_flights = cursor.fetchall()
             cursor.close()
-            return render_template('cust_one_way_result.html', one_flights=one_flights)
+            return render_template('/cust/one_way_result.html', one_flights=one_flights)
         # if round trip
         else:
             return_date = request.form['return_date']
@@ -95,13 +95,13 @@ def cust_search_flight():
             cursor.execute(search_return)
             return_flights = cursor.fetchall()
             cursor.close()
-            return render_template('cust_round_result.html', forward_flights=forward_flights, return_flights=return_flights)
+            return render_template('/cust/round_result.html', forward_flights=forward_flights, return_flights=return_flights)
     else:
-        return render_template('cust_search_flight.html')
+        return render_template('/cust/search_flight.html')
 
 
 # CUSTOMER PURCHASE
-@app.route('/cust_purchase', methods=['POST'])
+@app.route('/cust/purchase', methods=['POST'])
 def cust_purchase():
     email = session['email']
     referrer = request.headers.get('Referer')
@@ -111,7 +111,7 @@ def cust_purchase():
     flight_num = request.form['flight_num']
     dept_datetime = request.form['dept_datetime']
     # getting all the information for purchase
-    if 'cust_purchase' not in referrer:
+    if '/cust/purchase' not in referrer:
         # get flight information 
         query = 'SELECT dept_airport, arrive_airport, arrive_datetime, base_price FROM flight WHERE \
             airline_name = %s and flight_num = %s and dept_datetime = %s'
@@ -135,7 +135,7 @@ def cust_purchase():
         else:
             additional_price = 0
         final_price = base_price + additional_price
-        return render_template('cust_purchase.html', airline_name=airline_name, flight_num=flight_num, \
+        return render_template('/cust/purchase.html', airline_name=airline_name, flight_num=flight_num, \
                                dept_datetime=dept_datetime, flight_info=flight_info, base_price=base_price, \
                                 additional_price=additional_price, final_price=final_price, num_tickets=num_tickets)
     # process purchase
@@ -162,7 +162,7 @@ def cust_purchase():
         if data:
             cursor.close()
             error = "You already booked this ticket!"
-            return render_template('cust_purchase_confirm.html', error=error)
+            return render_template('/cust/purchase_confirm.html', error=error)
         else:
             # INSERT TO PAYMENT_INFO
             check_card_num = 'SELECT card_num FROM payment_info WHERE card_num = %s'
@@ -184,18 +184,18 @@ def cust_purchase():
             cursor.execute(ins_purchases, (ticket_id, card_num, email, datetime.now(), final_price))
             conn.commit()
             cursor.close()
-            return render_template('cust_purchase_confirm.html', error=error)
+            return render_template('/cust/purchase_confirm.html', error=error)
         
 
 # CUSTOMER RATE
-@app.route('/cust_rate', methods=['POST'])
+@app.route('/cust/rate', methods=['POST'])
 def cust_rate():
     email = session['email']
     cursor = conn.cursor()
     referrer = request.headers.get('Referer')
     ticket_id = request.form['ticket_id']
     if 'home_cust' in referrer:
-        return render_template('cust_rate.html', ticket_id=ticket_id)
+        return render_template('/cust/rate.html', ticket_id=ticket_id)
     else:
         # ADD RATING AND COMMENT
         rating = request.form['rating']
@@ -204,12 +204,12 @@ def cust_rate():
         cursor.execute(query, (rating, comment, email, ticket_id))
         conn.commit()
         cursor.close()
-        return render_template('cust_rate_confirm.html')
+        return render_template('/cust/rate_confirm.html')
 
 
 
 # CUSTOMER TRACK SPENDING
-@app.route('/cust_track_spending', methods=['GET', 'POST'])
+@app.route('/cust/track_spending', methods=['GET', 'POST'])
 def cust_track_spending():
     email = session['email']
     cursor = conn.cursor()
@@ -238,7 +238,7 @@ def cust_track_spending():
         cursor.execute(search_query, (email, start, end))
         search = cursor.fetchall()
     cursor.close()
-    return render_template('cust_track_spending.html', year=year, total_spending=total_spending, \
+    return render_template('/cust/track_spending.html', year=year, total_spending=total_spending, \
                            month_wise=month_wise, search=search)
 
 

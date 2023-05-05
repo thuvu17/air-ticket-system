@@ -65,7 +65,7 @@ def home_staff():
 
 
 # STAFF VIEW FLIGHTS
-@app.route('/staff_view_flights', methods=['POST', 'GET'])
+@app.route('/staff/view_flights', methods=['POST', 'GET'])
 def staff_view_flights():
     """
     default: display all flights by that airline
@@ -82,7 +82,7 @@ def staff_view_flights():
     condition = "airline_name = '{}'".format(airline_name)
     if request.method == 'GET':
         cursor.close()
-        return render_template('staff_view_flights.html', airline_name=airline_name, \
+        return render_template('staff/view_flights.html', airline_name=airline_name, \
                            all_flights=all_flights, request='GET')
     # display flights within specified range
     else:
@@ -92,7 +92,7 @@ def staff_view_flights():
             and date(dept_datetime) <= '{}'".format(airline_name, start, end)
         search = get_flight_info(cursor, search_condition)
         cursor.close()
-        return render_template('staff_view_flights.html', airline_name=airline_name, \
+        return render_template('staff/view_flights.html', airline_name=airline_name, \
                            all_flights=all_flights, search=search, request='POST')
     
 
@@ -230,7 +230,7 @@ def staff_change_status():
         return render_template('/staff/change_status_confirm.html')
     else:
         cursor.close()
-        return redirect(url_for('staff_view_flights')) 
+        return redirect(url_for('staff/view_flights')) 
     
 
 
@@ -387,5 +387,76 @@ def staff_add_airport():
             error = 'Airport is already in the system!'
             return render_template('/staff/add_airport.html', error=error)
     else:
+        cursor.close()
         return render_template('/staff/add_airport.html')
-        
+    
+
+# STAFF VIEW REPORTS
+@app.route('/staff/view_reports', methods=['GET','POST'])
+def staff_view_reports():
+    """
+    POST: get specified date range and display total amount of tickets sold
+    GET: month wise ticket sold in a bar chart
+    """
+    # get airline
+    cursor = conn.cursor()
+    username = session['username']
+    airline_name = get_staff_info(cursor, 'airline_name', username)
+    # get month-wise report
+    year = datetime.now().year
+    get_monthly_tickets = 'SELECT month(date_time) as month, count(ticket_id) as num_tickets  \
+                            FROM ticket natural join purchases WHERE year(date_time) = %s and \
+                            airline_name = %s GROUP BY month ORDER BY month'
+    cursor.execute(get_monthly_tickets, (year, airline_name))
+    monthly_tickets = cursor.fetchall()
+    month_wise_report = [0 for i in range(12)]
+    for each in monthly_tickets:
+        month_wise_report[each['month'] - 1] = each['num_tickets']
+    # GET REQUEST - display month-wise report
+    if request.method == 'GET':
+        cursor.close()
+        return render_template('/staff/view_reports.html', month_wise_report=month_wise_report, \
+                               airline_name=airline_name)
+    # POST REQUEST - search in specified range
+    else:
+        start = request.form['start']
+        end = request.form['end']
+        query = 'SELECT count(ticket_id) as num_tickets FROM ticket natural join purchases \
+                WHERE date(date_time) <= %s and date(date_time) >= %s and airline_name = %s'
+        cursor.execute(query, (end, start, airline_name))
+        search = cursor.fetchone()
+        result = search['num_tickets']
+        cursor.close()
+        return render_template('/staff/view_reports.html', month_wise_report=month_wise_report, \
+                airline_name=airline_name, search=search, start=start, end=end, result=result)
+    
+
+
+# STAFF VIEW EARNED REVENUE
+@app.route('/staff/view_revenue', methods=['GET'])
+def staff_view_revenue():
+    """
+    Show total amount of revenue earned from ticket sales in the last month and last year.
+    """
+    # get airline
+    cursor = conn.cursor()
+    username = session['username']
+    airline_name = get_staff_info(cursor, 'airline_name', username)
+    # get revenue last month
+    month = datetime.now().month
+    get_rev_month = 'SELECT sum(calc_price) as rev FROM ticket natural join purchases WHERE \
+                    airline_name = %s and month(date_time) = %s'
+    cursor.execute(get_rev_month, (airline_name, month))
+    rev_month = cursor.fetchone()['rev']
+    if not rev_month:
+        rev_month = 0
+    # get revenue last year
+    year = datetime.now().year
+    get_rev_year = 'SELECT sum(calc_price) as rev FROM ticket natural join purchases WHERE \
+                    airline_name = %s and year(date_time) = %s'
+    cursor.execute(get_rev_year, (airline_name, year))
+    rev_year = cursor.fetchone()['rev']
+    if not rev_year:
+        rev_year = 0
+    return render_template('/staff/view_revenue.html', airline_name=airline_name, \
+                           rev_month=rev_month, rev_year=rev_year)
