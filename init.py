@@ -63,7 +63,7 @@ def login_auth_staff():
     # grabs information from the forms
     username = request.form['username']
     password = request.form['password']
-    encrypted = hashlib.md5(password)
+    encrypted = hashlib.md5(password.encode('utf-8')).hexdigest()
     # executes query
     cursor = conn.cursor()
     query = 'SELECT * FROM airline_staff WHERE username = %s and password = %s'
@@ -88,7 +88,7 @@ def login_auth_cust():
     # grabs information from the forms
     email = request.form['email']
     password = request.form['password']
-    encrypted = hashlib.md5(password)
+    encrypted = hashlib.md5(password.encode('utf-8')).hexdigest()
     # executes query
     cursor = conn.cursor()
     query = 'SELECT * FROM customer WHERE email = %s and password = %s'
@@ -139,7 +139,7 @@ def register_auth_cust():
         error = "This account already exists"
         return render_template('register_cust.html', error=error)
     else:
-        encrypted = hashlib.md5(password)
+        encrypted = hashlib.md5(password.encode('utf-8')).hexdigest()
         ins = 'INSERT INTO customer VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         cursor.execute(ins, (email, encrypted, first_name, last_name, building_num,
                              street, apt_num, city, state, zip_code, passport_num, passport_exp,
@@ -181,7 +181,7 @@ def register_auth_staff():
         return render_template('register_staff.html', error=error)
     else:
         # insert into airline_staff
-        encrypted = hashlib.md5(password)
+        encrypted = hashlib.md5(password.encode('utf-8')).hexdigest()
         ins = 'INSERT INTO airline_staff VALUES(%s, %s, %s, %s, %s, %s)'
         cursor.execute(ins, (username, airline_name, encrypted,
                        first_name, last_name, date_of_birth))

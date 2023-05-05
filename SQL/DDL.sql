@@ -24,7 +24,7 @@ CREATE TABLE airline_staff (
     
 CREATE TABLE staff_email (
     username VARCHAR(10),
-    email VARCHAR(20),
+    email VARCHAR(50),
     PRIMARY KEY(username, email),
     FOREIGN KEY(username) REFERENCES airline_staff(username)
 );
@@ -63,7 +63,7 @@ CREATE TABLE flight (
 );
 
 CREATE TABLE ticket (
-    ticket_id CHAR(5) PRIMARY KEY,
+    ticket_id VARCHAR(20) PRIMARY KEY,
     airline_name VARCHAR(20),
     flight_num CHAR(5),
     dept_datetime DATETIME,
@@ -81,7 +81,7 @@ CREATE TABLE payment_info (
 );
 
 CREATE TABLE customer (
-    email VARCHAR(20) PRIMARY KEY,
+    email VARCHAR(50) PRIMARY KEY,
     `password` VARCHAR(200),
     first_name VARCHAR(20),
     last_name VARCHAR(20),
@@ -98,9 +98,9 @@ CREATE TABLE customer (
 );
 
 CREATE TABLE purchases (
-    ticket_id CHAR(5),
+    ticket_id VARCHAR(20),
     card_num VARCHAR(16),
-    email VARCHAR(20),
+    email VARCHAR(50),
     date_time DATETIME,
     calc_price FLOAT,
     rating NUMERIC(2, 1),
@@ -113,7 +113,7 @@ CREATE TABLE purchases (
 
 CREATE TABLE cust_contact (
     phone_num VARCHAR(10),
-    email VARCHAR(20),
+    email VARCHAR(50),
     PRIMARY KEY(phone_num, email),
     FOREIGN KEY(email) REFERENCES customer(email)
 );

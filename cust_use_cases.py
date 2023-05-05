@@ -4,6 +4,7 @@
 from flask import Flask, render_template, request, session
 from datetime import datetime, timedelta
 from setup import app, conn
+from decimal import Decimal
 from staff_use_cases import get_flight_info
 
 
@@ -34,11 +35,11 @@ def home_cust():
 
 
 # CUSTOMER CANCEL TRIP
-@app.route('/cust/cancel_trip', methods=['GET', 'POST'])
+@app.route('/cust/cancel_trip', methods=['POST'])
 def cust_cancel_trip():
     cursor = conn.cursor()
     # check if flight is in more than 24 hours
-    dept_datetime = request.form['dept_datetime']
+    dept_datetime = datetime.strptime(request.form['dept_datetime'], '%Y-%m-%d %H:%M:%S')
     error = None
     # if <= 24 hours, do not allow cancel
     if dept_datetime <= datetime.now() + timedelta(days=1):
@@ -103,6 +104,7 @@ def cust_purchase():
     airline_name = request.form['airline_name']
     flight_num = request.form['flight_num']
     dept_datetime = request.form['dept_datetime']
+    print(airline_name, flight_num, dept_datetime)
     # getting all the information for purchase
     if '/cust/purchase' not in referrer:
         # get flight information 
@@ -112,8 +114,9 @@ def cust_purchase():
         flight_info = cursor.fetchone()
         base_price = flight_info['base_price']
         # get availability
-        get_seats = 'SELECT seats FROM airplane natural join flight WHERE airline_name = %s and\
-                    flight_num = %s and dept_datetime = %s'
+        get_seats = 'SELECT seats FROM airplane, flight WHERE flight.airline_name = %s and\
+                    flight_num = %s and dept_datetime = %s and airplane.airline_name = flight.plane_airline \
+                    and airplane.plane_id = flight.plane_id'
         cursor.execute(get_seats, (airline_name, flight_num, dept_datetime))
         seats = cursor.fetchone()['seats']
         get_num_tickets = 'SELECT count(*) as num_tickets FROM ticket WHERE airline_name = %s and \
@@ -122,9 +125,13 @@ def cust_purchase():
         num_tickets = cursor.fetchone()['num_tickets']
         availability = seats - num_tickets
         cursor.close()
+        # if no more seats
+        if availability == 0:
+            error = "Sorry, there are no more seats on this flight!"
+            return render_template('/cust/purchase_confirm.html', error=error)
         # calculate final price based on availability
         if availability <= 0.2 * seats:
-            additional_price = 0.25 * base_price
+            additional_price = Decimal(0.25) * base_price
         else:
             additional_price = 0
         final_price = base_price + additional_price
@@ -157,6 +164,7 @@ def cust_purchase():
             error = "You already booked this ticket!"
             return render_template('/cust/purchase_confirm.html', error=error)
         else:
+            now = datetime.now()
             # INSERT TO PAYMENT_INFO
             check_card_num = 'SELECT card_num FROM payment_info WHERE card_num = %s'
             cursor.execute(check_card_num, (card_num))
@@ -167,14 +175,15 @@ def cust_purchase():
                 cursor.execute(ins_payment, (card_num, card_type, card_name, exp_date))
                 conn.commit()
             # INSERT INTO TICKET
-            ticket_id = "{}{}".format(email[:2], str(num_tickets + 1))
+            # generate ticket_id = time of purchase + order of purchase
+            ticket_id = "{}#{}".format(now.strftime('%H:%M:%S'), str(num_tickets + 1))
             ins_ticket = 'INSERT INTO ticket VALUES (%s, %s, %s, %s, %s, %s, %s)'
             cursor.execute(ins_ticket, (ticket_id, airline_name, flight_num, dept_datetime, \
-                                    first_name, last_name, date_of_birth))
+                            first_name, last_name, date_of_birth))
             conn.commit()
             # INSERT INTO PURCHASES
             ins_purchases = 'INSERT INTO purchases VALUES (%s, %s, %s, %s, %s, NULL, NULL)'
-            cursor.execute(ins_purchases, (ticket_id, card_num, email, datetime.now(), final_price))
+            cursor.execute(ins_purchases, (ticket_id, card_num, email, now, final_price))
             conn.commit()
             cursor.close()
             return render_template('/cust/purchase_confirm.html', error=error)
@@ -213,26 +222,36 @@ def cust_track_spending():
         email = %s and year(date_time) = %s'
     cursor.execute(get_total, (email, year))
     total_spending = cursor.fetchone()['total_spending']
-    # month wise amount in past 6 months
+    # get month-wise report: spending in the last 6 months within the year
+    this_month = datetime.now().month
+    this_year = datetime.now().year
     get_month_wise = 'SELECT month(date_time) as month, sum(calc_price) as month_spending \
-        FROM purchases WHERE email = %s and datediff(%s, date(date_time)) > %s and \
-            datediff(%s, date(date_time)) <= %s GROUP BY month(date_time)'
-    cursor.execute(get_month_wise, (email, today, 0, today, 180))
+                    FROM purchases WHERE email = %s and %s > date_time \
+                    and datediff(%s, date(date_time)) <= %s GROUP BY month(date_time)'
+    cursor.execute(get_month_wise, (email, today, today, 180))
     month_wise = cursor.fetchall()
+    if this_month >= 6:
+        months = [i for i in range(1, 7)]
+    else:
+        months = [i for i in range(1, this_month + 1)]
+    month_wise_spending = [0 for i in range(len(months))]
+    for each in month_wise:
+        month_wise_spending[each['month'] - months[0]] = each['month_spending']
     if request.method == 'GET':
         search = None
+    # CUSTOMER VIEW SPENDING IN A SPECIFIED RANGE
     else:
         # fetch data
         start = request.form['start']
         end = request.form['end']
         search_query = 'SELECT month(date_time) as month, sum(calc_price) as month_spending \
-        FROM purchases WHERE email = %s and date(date_time) >= %s and date(date_time) <= %s \
-            GROUP BY month(date_time)'
+                        FROM purchases WHERE email = %s and date(date_time) >= %s \
+                        and date(date_time) <= %s GROUP BY month(date_time)'
         cursor.execute(search_query, (email, start, end))
         search = cursor.fetchall()
     cursor.close()
     return render_template('/cust/track_spending.html', year=year, total_spending=total_spending, \
-                           month_wise=month_wise, search=search)
+                           month_wise_spending=month_wise_spending, months=months, search=search)
 
 
         

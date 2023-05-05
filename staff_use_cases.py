@@ -390,7 +390,6 @@ def staff_add_airport():
             error = 'Airport is already in the system!'
             return render_template('/staff/add_airport.html', error=error)
     else:
-        cursor.close()
         return render_template('/staff/add_airport.html')
     
 

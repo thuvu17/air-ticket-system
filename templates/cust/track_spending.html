@@ -11,27 +11,37 @@
     <h2>Annual total spending</h2>
     <p>In {{year}}, you have spent a total of: ${{total_spending}}</p>
     <h2>Monthly spending in the past 6 months</h2>
-    <div>
-        <style type="text/css">
-            table, th, td{
-                border: 1px solid black;
-            }
-            th, td {
-            padding: 3px;
-            text-align: center;
-            }
-        </style>
-        <table>
-            <th>Month</th>
-            <th>Total spending</th>
-            {% for row in month_wise %}
-                <tr>
-                    <td>{{row['month']}}</td>
-                    <td>{{row['month_spending']}}</td>
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+      <body>
+
+      <canvas id="reportChart" style="width:100%;max-width:600px"></canvas>
+
+      <script>
+      var xValues = {{months}};
+      var yValues = {{month_wise_spending}};
+      var barColors = [];
+
+      new Chart("reportChart", {
+        type: "bar",
+        data: {
+          labels: xValues,
+          datasets: [{
+            backgroundColor: barColors,
+            data: yValues
+          }]
+        },
+        options: {
+          legend: {display: false},
+          title: {
+            display: true,
+            text: "Monthly Spending"
+          }
+        }
+      });
+      </script>
+
+
     <h3>View your spending in the following range:</h3>
     <div>
         <form action="/cust/track_spending" method="POST">
@@ -64,11 +74,13 @@
             {% for row in search %}
                 <tr>
                     <td>{{row['month']}}</td>
-                    <td>{{row['month_spending']}}</td>
+                    <td>${{row['month_spending']}}</td>
                 </tr>
             {% endfor %}
         </table>
     </div>
+    {% else %}
+        <p>No search result</p>
     {% endif %}
     <br>
     <a href="/home_cust">Go back</a>

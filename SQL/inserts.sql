@@ -27,6 +27,7 @@ INSERT INTO flight VALUES('Jet Blue', 'jb123', '2023-4-5 09:00', 'Jet Blue', 'bo
 INSERT INTO flight VALUES('Jet Blue', 'jb790', '2023-4-14 10:00', 'Jet Blue', 'ab456', '2023-4-14 15:00', 'LAXUS', 'JFKUS', 'on-time', 580.14);
 INSERT INTO flight VALUES('Frontier', 'ft489', '2023-4-5 08:00', 'Frontier', 'ab147', '2023-4-6 9:00', 'LAXUS', 'PVGSH', 'delayed', 1534.25);
 INSERT INTO flight VALUES('Frontier', 'ft984', '2023-5-5 08:00', 'Frontier', 'ab147', '2023-5-6 9:00', 'PVGSH', 'LAXUS', 'on-time', 1501.25);
+INSERT INTO flight VALUES('Frontier', 'ft000', '2023-5-14 08:00', 'Jet Blue', 'ab456', '2023-5-14 9:00', 'PVGSH', 'LAXUS', 'on-time', 248.25);
 
 
 INSERT INTO ticket VALUES('ec045', 'Jet Blue', 'jb123', '2023-4-5 09:00', 'Mary', 'Green', '1980-3-21');
@@ -44,9 +45,9 @@ INSERT INTO customer VALUES('john.paul@gmail.com', '530e1d17307fcea31ab6eb9609db
 INSERT INTO customer VALUES('t.brown@gmail.com', 'f048dac168f2cc18d12a60a424e1748c', 'Tracy', 'Brown', '12', 'Green', '36C', 'Brooklyn', 'New York', '11201', 'A1858392', '2024-11-12', 'United States', '2000-7-15');
 
 
-INSERT INTO purchases VALUES('ec045', '1234567898765432', 'mary.green@gmail.com', '2023-3-23 19:04', null, null, 410.75);
-INSERT INTO purchases VALUES('fc001', '1734367598205431', 'john.paul@gmail.com', '2023-2-19 07:20', null, null, 600.25);
-INSERT INTO purchases VALUES('ec145', '1040507258104965', 't.brown@gmail.com', '2023-1-1 05:14', null, null, 1503.24);
+INSERT INTO purchases VALUES('ec045', '1234567898765432', 'mary.green@gmail.com', '2023-3-23 19:04', 410.75, null, null);
+INSERT INTO purchases VALUES('fc001', '1734367598205431', 'john.paul@gmail.com', '2023-2-19 07:20', 600.25, null, null);
+INSERT INTO purchases VALUES('ec145', '1040507258104965', 't.brown@gmail.com', '2023-1-1 05:14', 1503.24, null, null);
 
 
 INSERT INTO cust_contact VALUES('6473926485', 'mary.green@gmail.com');

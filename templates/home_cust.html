@@ -79,6 +79,7 @@
                         <td>
                             <form action="/cust/cancel_trip" method="POST">
                                 <input type="hidden" name="ticket_id" value="{{row['ticket_id']}}">
+                                <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
                                 <input type="submit" value = "Cancel"/>
                             </form>
                         </td>
