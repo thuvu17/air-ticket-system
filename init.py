@@ -195,11 +195,15 @@ def register_auth_staff():
         cursor.close()
         return render_template('index.html')
 
+
+# HELPER QUERY FOR SEARCH_FLIGHT
+# This query retrieves the flight info when user put in desired departure/arrival airport name,
+# city, and datetime. Flight info including airline, flight_num, airport, and datetime
 query_for_search_flight = 'SELECT airline_name, flight_num, dept_airport, arrive_airport, dept_datetime, arrive_datetime \
     FROM (SELECT airline_name, flight_num, dept_airport, arrive_airport, dept_datetime, arrive_datetime \
-        FROM flight natural join airport natural join airplane WHERE date(dept_datetime) = "{}" and \
-            arrive_airport = airport_code and name = "{}" and city = "{}") sub natural join airport \
-                WHERE dept_airport = airport_code and name = "{}" and city = "{}"'
+    FROM flight natural join airport natural join airplane WHERE date(dept_datetime) = "{}" and \
+    arrive_airport = airport_code and name = "{}" and city = "{}") sub natural join airport \
+    WHERE dept_airport = airport_code and name = "{}" and city = "{}"'
 
 # VIEW PUBLIC INFO
 @app.route('/search_flight', methods=['GET', 'POST'])
