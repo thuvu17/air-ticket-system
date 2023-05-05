@@ -10,8 +10,8 @@ INSERT INTO airline_staff VALUES('jd123', 'Jet Blue', 'c9ebd9d560a780ca06d0fb94f
 INSERT INTO airline_staff VALUES('jb456', 'Frontier', 'ae992f6cc79682aacc4d17220cb152c3', 'James', 'Brown', '1997-11-17');
 
 
-INSERT INTO staff_email VALUES('jd123', 'Jet Blue', 'janepassword', 'Jane', 'Doe', '1996-11-14');
-INSERT INTO staff_email VALUES('jb456', 'Frontier', 'frontier', 'James', 'Brown', '1997-11-17');
+INSERT INTO staff_email VALUES('jd123', 'jane.doe@gmail.com');
+INSERT INTO staff_email VALUES('jb456', 'james.brown@gmail.com');
 
 
 INSERT INTO staff_phone VALUES('jd123', '7183145130');
@@ -49,6 +49,6 @@ INSERT INTO purchases VALUES('fc001', '1734367598205431', 'john.paul@gmail.com',
 INSERT INTO purchases VALUES('ec145', '1040507258104965', 't.brown@gmail.com', '2023-1-1 05:14', null, null, 1503.24);
 
 
-INSERT INTO cust_contact VALUES('6473926485', 'mary.green@gmail.com')
-INSERT INTO cust_contact VALUES('7463027466', 'john.paul@gmail.com')
-INSERT INTO cust_contact VALUES('7778883647', 't.brown@gmail.com')
+INSERT INTO cust_contact VALUES('6473926485', 'mary.green@gmail.com');
+INSERT INTO cust_contact VALUES('7463027466', 'john.paul@gmail.com');
+INSERT INTO cust_contact VALUES('7778883647', 't.brown@gmail.com');
