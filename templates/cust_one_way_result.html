@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Air Ticket Reservation System | Search Result</title>
+    </head>
+<body>
+    <h1>One-way Search Result</h1>
+    {% if one_flights %}
+        <style type="text/css">
+            table, th, td{
+                border: 1px solid black;
+            }
+            th, td {
+            padding: 3px;
+            text-align: center;
+            }
+        </style>
+        <table>
+            <th>Airline</th>
+            <th>Flight number</th>
+            <th>Origin airport</th>
+            <th>Destination airport</th>
+            <th>Departure date</th>
+            <th>Arrival date</th>
+            <th>Purchase</th>
+            {% for row in one_flights %}
+                <tr>
+                    <td>{{row['airline_name']}}</td>
+                    <td>{{row['flight_num']}}</td>
+                    <td>{{row['dept_airport']}}</td>
+                    <td>{{row['arrive_airport']}}</td>
+                    <td>{{row['dept_datetime']}}</td>
+                    <td>{{row['arrive_datetime']}}</td>
+                    <td>
+                        <form action="/cust_purchase" method="POST">
+                            <input type="hidden" name="airline_name" value="{{row['airline_name']}}">
+                            <input type="hidden" name="flight_num" value="{{row['flight_num']}}">
+                            <input type="hidden" name="dept_datetime" value="{{row['dept_datetime']}}">
+                            <input type="submit" value = "Purchase"/>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No search results available.</p>
+    {% endif %}
+    <br>
+    <p><a href="/cust_search_flight">Back to search</a></p>
+    <p><a href="/home_cust">Back to homepage</a></p>
+
+</body>
+
+
+</html>

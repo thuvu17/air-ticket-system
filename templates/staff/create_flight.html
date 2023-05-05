@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Ticket Reservation System | Create Flight</title>
+</head>
+<body>
+    <h1>{{airline_name}} airline</h1>
+    <h2>Create Flight</h2>
+    <div>
+    <form action="/staff/create_flight" method="POST">
+        <h3>Flight Information</h3>
+        <p>
+            <label for="flight_num">Flight number</label>
+            <input type="text" name = "flight_num" placeholder="xx123" required/>
+        </p>
+        <p>
+            <label for="dept_datetime">Departure datetime</label>
+            <input type="datetime-local" name = "dept_datetime" required/>
+        </p>
+        <p>
+            <label for="arrive_datetime">Arrival datetime</label>
+            <input type="datetime-local" name = "arrive_datetime" required/>
+        </p>
+        <p>
+            <label for="base_price">Base price</label>
+            <input type="number" step="0.01" name = "base_price" placeholder="base price"/>
+        </p>
+        <p>
+            <label for="status">Status</label>
+            <select name="status">
+                <option value="on-time">On-time</option>
+                <option value="delayed">Delayed</option>
+                <option value="cancelled">Canceled</option>
+                <option value="arrived">Arrived</option>
+                <option value="completed">Completed</option>
+                <option value="boarding">Boarding</option>
+                <option value="in-flight">In-flight</option>
+            </select>
+        </p>
+        <h3>Airport Information</h3>
+        <p>
+            <label for="dept_airport">Departure airport code </label>
+            <select name="dept_airport" required>
+                {% for each in airports %}
+                    <option value="{{each['airport_code']}}">{{each['airport_code']}}</option>
+                {% endfor %}
+            </select>
+        </p> 
+        <p>
+            <label for="arrive_airport">Arrival airport code </label>
+            <select name="arrive_airport" required>
+                {% for each in airports %}
+                    <option value="{{each['airport_code']}}">{{each['airport_code']}}</option>
+                {% endfor %}
+            </select>
+        </p> 
+        <h3>Airplane Information</h3>
+        <p>
+            <label for="plane_airline">Airline</label>
+            <select name="plane_airline" required>
+                {% for each in airlines %}
+                    <option value="{{each['airline_name']}}">{{each['airline_name']}}</option>
+                {% endfor %}
+            </select>
+        </p> 
+        <p>
+            <label for="plane_id">Plane ID</label>
+            <input type="text" name = "plane_id" placeholder="xx123" required/>
+        </p>
+        <input type="submit" value = Create />
+    </form>
+    </div>
+    {% if error %}
+        <p class="error"><strong>Error:</strong> {{error}}</p>
+    {% endif %}
+    <br><br>
+    <a href="/home_staff">Go back</a>
+</body>
+</html>

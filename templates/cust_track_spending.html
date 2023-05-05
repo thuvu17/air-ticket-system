@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Ticket Reservation System | Track Spending</title>
+</head>
+<body>
+    <h1>Track My Spending</h1>
+    <h2>Annual total spending</h2>
+    <p>In {{year}}, you have spent a total of: ${{total_spending}}</p>
+    <h2>Monthly spending in the past 6 months</h2>
+    <div>
+        <style type="text/css">
+            table, th, td{
+                border: 1px solid black;
+            }
+            th, td {
+            padding: 3px;
+            text-align: center;
+            }
+        </style>
+        <table>
+            <th>Month</th>
+            <th>Total spending</th>
+            {% for row in month_wise %}
+                <tr>
+                    <td>{{row['month']}}</td>
+                    <td>{{row['month_spending']}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <h3>View your spending in the following range:</h3>
+    <div>
+        <form action="/cust_track_spending" method="POST">
+            <p>
+                <label for="start">Start date</label>
+                <input type="date" name = "start"/>
+            </p>
+            <p>
+                <label for="end">End date</label>
+                <input type="date" name = "end"/>
+            </p>
+            <input type="submit" value = "Search"/>
+        </form>
+    </div>
+    {% if search %}
+    <div>
+        <h4>Search result</h4>
+        <style type="text/css">
+            table, th, td{
+                border: 1px solid black;
+            }
+            th, td {
+            padding: 3px;
+            text-align: center;
+            }
+        </style>
+        <table>
+            <th>Month</th>
+            <th>Total spending</th>
+            {% for row in search %}
+                <tr>
+                    <td>{{row['month']}}</td>
+                    <td>{{row['month_spending']}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+    <br>
+    <a href="/home_cust">Go back</a>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Ticket Reservation System | Airline Staff Home Page</title>
+</head>
+<body>
+    <h1>{{airline_name}} Airline</h1>
+    <h2>Welcome, {{first_name}}</h2>
+    <h3>My Upcoming Flights</h3>
+    {% if flights %}
+        <p>Your flight schedule in the next 30 days</p>
+        <div>
+            <style type="text/css">
+                table, th, td{
+                    border: 1px solid black;
+                }
+                th, td {
+                padding: 3px;
+                text-align: center;
+                }
+            </style>
+            <table>
+                <th>Flight number</th>
+                <th>Origin city</th>
+                <th>Origin airport</th>
+                <th>Departure date</th>
+                <th>Destination city</th>
+                <th>Destination airport</th>
+                <th>Arrival date</th>
+                <th>Status</th>
+                {% for row in flights %}
+                    <tr>
+                        <td>{{row['flight_num']}}</td>
+                        <td>{{row['dept_city']}}</td>
+                        <td>{{row['dept_airport']}}</td>
+                        <td>{{row['dept_datetime']}}</td>
+                        <td>{{row['arrive_city']}}</td>
+                        <td>{{row['arrive_airport']}}</td>
+                        <td>{{row['arrive_datetime']}}</td>
+                        <td>{{row['status']}}</td>
+                    </tr>
+                {% endfor %}
+        </table>
+        </div>
+    {% else %}
+        <p>You have no flight in the next 30 days</p>
+    {% endif %}
+    <h3>Views</h3>
+    <p><a href="/staff_view_flights">View airline flights</a></p>
+    <p><a href="/staff/view_customers">View all customers</a></p>
+    <p><a href="/staffViewReports">View Reports</a></p>
+    <br>
+    <h3>Workspace</h3>
+	<p><a href="/staff/create_flight">Create new flights</a></p>
+    <p><a href="/staff/add_airplane">Add airplane</a></p>
+    <p><a href="/staff/add_airport">Add airport</a></p>
+    <p>This is only for adding new instances. If you want to edit, please go to 
+        <a href="/staff_view_flights">view airline flights</a></p>
+    <br>
+    <p><a href="/logout_staff">Logout</a></p>
+    
+    
+</body>
+</html>

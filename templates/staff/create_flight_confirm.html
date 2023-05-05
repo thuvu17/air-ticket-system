@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Air Ticket Reservation System | Create Flight Confirmation Page</title>
+    </head>
+<body>
+    <h1>Create Flight Confirmation</h1>
+    <h2>Create flight successfull!</h2>
+    <h3>Flight information:</h3>
+    <div>
+        <p>Airline: {{airline_name}}</p>
+        <p>Plane ID: {{plane_id}}</p>
+        <p>Flight number: {{flight_num}}</p>
+        <p>Departure airport: {{dept_airport}}</p>
+        <p>Arrival airport: {{arrive_airport}}</p>
+        <p>Departure time: {{dept_datetime}}</p>
+        <p>Arrival time: {{arrive_datetime}}</p>
+        <p>Status: {{status}}</p>
+        <p>Base price: ${{base_price}}</p>
+    </div>
+    <h3>My Upcoming Flights</h3>
+    {% if flights %}
+        <p>Your flight schedule in the next 30 days</p>
+        <div>
+            <style type="text/css">
+                table, th, td{
+                    border: 1px solid black;
+                }
+                th, td {
+                padding: 3px;
+                text-align: center;
+                }
+            </style>
+            <table>
+                <th>Flight number</th>
+                <th>Origin city</th>
+                <th>Origin airport</th>
+                <th>Departure date</th>
+                <th>Destination city</th>
+                <th>Destination airport</th>
+                <th>Arrival date</th>
+                <th>Status</th>
+                {% for row in flights %}
+                    <tr>
+                        <td>{{row['flight_num']}}</td>
+                        <td>{{row['dept_city']}}</td>
+                        <td>{{row['dept_airport']}}</td>
+                        <td>{{row['dept_datetime']}}</td>
+                        <td>{{row['arrive_city']}}</td>
+                        <td>{{row['arrive_airport']}}</td>
+                        <td>{{row['arrive_datetime']}}</td>
+                        <td>{{row['status']}}</td>
+                    </tr>
+                {% endfor %}
+        </table>
+        </div>
+    {% else %}
+        <p>You have no flight in the next 30 days</p>
+    {% endif %}
+    <br><br><br>
+    <a href="/staff_view_flights">Go back</a><br><br>
+    <a href="/home_staff">Go back to homepage</a><br><br>
+
+</body>
+
+
+</html>
+

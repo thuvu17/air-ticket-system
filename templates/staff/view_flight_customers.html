@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Air Ticket Reservation System | View Flight Customers</title>
+    </head>
+<body>
+    <h1>{{airline_name}} Airline</h1>
+    <h2>View Customers</h2>
+    <p>Flight number: {{flight_num}}</p>
+    {% if customers %}
+    <div>
+        <style type="text/css">
+            table, th, td{
+                border: 1px solid black;
+            }
+            th, td {
+            padding: 3px;
+            text-align: center;
+            }
+        </style>
+        <table>
+            <th>Email</th>
+            <th>First name</th>
+            <th>Last name</th>
+            {% for row in customers %}
+                <tr>
+                    <td>{{row['email']}}</td>
+                    <td>{{row['first_name']}}</td>
+                    <td>{{row['last_name']}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    <br>
+    </div>
+    {% else %}
+        <p>There are no customers for this flight!</p>
+    {% endif %}
+
+    <br><br>
+    <p><a href="/staff_view_flights">Back to view</a></p>
+    <p><a href="/home_staff">Back to homepage</a></p>
+
+</body>
+
+
+</html>

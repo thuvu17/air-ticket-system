@@ -1,0 +1,102 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Air Ticket Reservation System | Homepage</title>
+    </head>
+<body>
+    <h1>Welcome {{first_name}}!</h1>
+    <h2>My Previous Flights</h2>
+    <div>
+        {% if done_flights %}
+            <style type="text/css">
+                table, th, td{
+                    border: 1px solid black;
+                }
+                th, td {
+                padding: 3px;
+                text-align: center;
+                }
+            </style>
+            <table>
+                <th>Airline</th>
+                <th>Flight number</th>
+                <th>Passenger first name</th>
+                <th>Passenger last name</th>
+                <th>Arrival date</th>
+                <th>Departure date</th>
+                <th>Give ratings</th>
+                {% for row in done_flights %}
+                    <tr>
+                        <td>{{row['airline_name']}}</td>
+                        <td>{{row['flight_num']}}</td>
+                        <td>{{row['first_name']}}</td>
+                        <td>{{row['last_name']}}</td>
+                        <td>{{row['arrive_datetime']}}</td>
+                        <td>{{row['dept_datetime']}}</td>
+                        <td>
+                            <form action="/cust_rate" method="POST">
+                                <input type="hidden" name="ticket_id" value="{{row['ticket_id']}}">
+                                <input type="submit" value = "Rate"/>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>You have not purchased any flights</p>
+        {% endif %}
+    </div>
+    <h2>My Upcoming Flights</h2>
+    <div>
+        {% if upcoming_flights %}
+            <style type="text/css">
+                table, th, td{
+                    border: 1px solid black;
+                }
+                th, td {
+                padding: 3px;
+                text-align: center;
+                }
+            </style>
+            <table>
+                <th>Airline</th>
+                <th>Flight number</th>
+                <th>Passenger first name</th>
+                <th>Passenger last name</th>
+                <th>Arrival date</th>
+                <th>Departure date</th>
+                <th>Cancel trip</th>
+                {% for row in upcoming_flights %}
+                    <tr>
+                        <td>{{row['airline_name']}}</td>
+                        <td>{{row['flight_num']}}</td>
+                        <td>{{row['first_name']}}</td>
+                        <td>{{row['last_name']}}</td>
+                        <td>{{row['arrive_datetime']}}</td>
+                        <td>{{row['dept_datetime']}}</td>
+                        <td>
+                            <form action="/cust_cancel_trip" method="POST">
+                                <input type="hidden" name="ticket_id" value="{{row['ticket_id']}}">
+                                <input type="submit" value = "Cancel"/>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>You have no upcoming flights</p>
+        {% endif %}
+    </div>
+    <h2>Search flights</h2>
+    <p><a href="/cust_search_flight">Search flights</a></p>
+    <h2>Track my spending</h2>
+    <p><a href="/cust_track_spending">Track my spending</a></p>
+    <br><br>
+    <a href="/logout_cust">Logout</a>
+
+</body>
+
+
+</html>

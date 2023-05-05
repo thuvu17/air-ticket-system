@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Ticket Reservation System | Register</title>
+</head>
+<body>
+    <h1>Airline Staff Registration</h1>
+    <form action="/register_auth_staff" method="POST">
+        <h2>Personal information</h2>
+        <div>
+            <p>
+                <label for="first_name">First name</label>
+                <input type="text" name = "first_name" placeholder="first name" required/>
+                <label for="last_name">Last name</label>
+                <input type="text" name = "last_name" placeholder="last name" required/>
+            </p>
+            <p>
+                <label for="date_of_birth">Date of birth</label>
+                <input type="date" name = "date_of_birth" placeholder="" required/>
+            </p>
+        </div>
+        <h2>Contact</h2>
+        <div>
+            <p>
+                <label for="email">Email address</label>
+                <input type="email" name = "email" placeholder="separated by comma" multiple/>
+            </p>   
+            <p>
+                <label for="phone_num">Phone number</label>
+                <input type="tel" name = "phone_num" placeholder="separated by comma" required multiple/>
+            </p>     
+        </div>
+        <h2>Account information</h2>
+        <div>
+            <p>
+                <label for="airline_name">Airline: </label>
+                <select name="airline_name" required>
+                    {% for each in airlines %}
+                        <option value="{{each['airline_name']}}">{{each['airline_name']}}</option>
+                    {% endfor %}
+                </select>
+            </p> 
+            <p>
+                <label for="username">Username</label>
+                <input type="text" name = "username" placeholder="username" required/>
+            </p> 
+            <p>
+                <label for="password">Password</label>
+                <input type="password" name = "password" placeholder="password" required/>
+            </p> 
+        </div>
+        <input type="submit" value = Register />
+        
+        {% if error %}
+            <p class="error"><strong>Error:</strong> {{error}}</p>
+        {% endif %}
+    </form>
+    <a href="/">Go back</a>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Air Ticket Reservation System | Add Airplane Confirmation Page</title>
+    </head>
+<body>
+    <h1>Add Airplane Confirmation</h1>
+    <h2>Airplane added successfully!</h2>
+    <h3>{{airline_name}} airplanes</h3>
+        <div>
+            <style type="text/css">
+                table, th, td{
+                    border: 1px solid black;
+                }
+                th, td {
+                padding: 3px;
+                text-align: center;
+                }
+            </style>
+            <table>
+                <th>Plane ID</th>
+                <th>Number of seats</th>
+                <th>Manufactured company</th>
+                <th>Manufactured date</th>
+                {% for row in planes %}
+                    <tr>
+                        <td>{{row['plane_id']}}</td>
+                        <td>{{row['seats']}}</td>
+                        <td>{{row['company']}}</td>
+                        <td>{{row['manu_date']}}</td>
+                    </tr>
+                {% endfor %}
+        </table>
+        </div>
+    <br><br><br>
+    <a href="/home_staff">Go back to homepage</a><br><br>
+
+</body>
+
+
+</html>
+

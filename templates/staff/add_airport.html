@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Ticket Reservation System | Add Airport</title>
+</head>
+<body>
+    <h1>Add Airport</h1>
+    <div>
+    <form action="/staff/add_airport" method="POST">
+        <h2>Airport Information</h2>
+        <p>
+            <label for="airport_code">Airport code</label>
+            <input type="text" name = "airport_code" placeholder="e.g. JFKUS" required/>
+        </p>
+        <p>
+            <label for="name">Airport name</label>
+            <input type="text" name = "name" placeholder="e.g. JFK" required/>
+        </p>
+        <p>
+            <label for="city">City</label>
+            <input type="text" name = "city" placeholder="e.g. New York" required/>
+        </p>
+        <p>
+            <label for="country">Country</label>
+            <input type="text" name = "country" placeholder="e.g. US" required/>
+        </p>
+        <p>Type:</p>
+        <p>
+            <input type="radio" name="type" id="international" value="international">
+            <label for="international">International</label>
+        </p>
+        <p>
+            <input type="radio" name="type" id="domestic" value="domestic">
+            <label for="domestic">Domestic</label>
+        </p>
+        <p>
+            <input type="radio" name="type" id="both" value="both">
+            <label for="both">Both</label>
+        </p>
+        <input type="submit" value = Add />
+    </form>
+    </div>
+    {% if error %}
+        <p class="error"><strong>Error:</strong> {{error}}</p>
+    {% endif %}
+    <br><br>
+    <a href="/home_staff">Go back</a>
+</body>
+</html>

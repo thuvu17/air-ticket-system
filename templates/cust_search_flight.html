@@ -1,0 +1,68 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Air Ticket Reservation System | Search Flight</title>
+    </head>
+<body>
+    <h1>Search Flight</h1>
+    <h2>One-way search</h2>
+    <div>
+        <form action="/cust_search_flight" method="POST">
+            <input type="hidden" name="one_or_round" value="one">
+            <p>
+                <label for="source_city">Source city</label>
+                <input type="text" name = "source_city" placeholder="" />
+                <label for="source_airport">Source airport</label>
+                <input type="text" name = "source_airport" placeholder="" />
+            </p>
+            <p>
+                <label for="dest_city">Destination city</label>
+                <input type="text" name = "dest_city" placeholder="" />
+                <label for="dest_airport">Destination airport</label>
+                <input type="text" name = "dest_airport" placeholder="" />
+            </p>
+            <p>
+                <label for="dept_date">Departure date</label>
+                <input type="date" name = "dept_date" placeholder="" />
+            </p>
+            <p>
+                <input type="submit" value = Search />
+            </p>
+        </form>
+    </div>
+    <h2>Round trip search</h2>
+    <div>
+        <form action="/cust_search_flight" method="POST">
+            <input type="hidden" name="one_or_round" value="round">
+            <p>
+                <label for="source_city">Source city</label>
+                <input type="text" name = "source_city" placeholder="" />
+                <label for="source_airport">Source airport</label>
+                <input type="text" name = "source_airport" placeholder="" />
+            </p>
+            <p>
+                <label for="dest_city">Destination city</label>
+                <input type="text" name = "dest_city" placeholder="" />
+                <label for="dest_airport">Destination airport</label>
+                <input type="text" name = "dest_airport" placeholder="" />
+            </p>
+            <p>
+                <label for="dept_date">Departure date</label>
+                <input type="date" name = "dept_date" placeholder="" />
+                <label for="return_date">Return date</label>
+                <input type="date" name = "return_date" placeholder=""/>
+            </p>
+            <p>
+                <input type="submit" value = Search />
+            </p>
+        </form>
+    </div>
+    <br>
+    <a href="/home_cust">Go back</a>
+
+</body>
+
+
+</html>

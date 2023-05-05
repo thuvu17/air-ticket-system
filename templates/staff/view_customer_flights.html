@@ -1,0 +1,54 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Air Ticket Reservation System | View Customer's Flights</title>
+    </head>
+<body>
+    <h1>{{airline_name}} Airline</h1>
+    <h2>View Customer's Flights</h2>
+    <p>Here are all the flights of customer with email: {{email}}</p>
+    <div>
+        <style type="text/css">
+            table, th, td{
+                border: 1px solid black;
+            }
+            th, td {
+            padding: 3px;
+            text-align: center;
+            }
+        </style>
+        <table>
+            <th>Flight number</th>
+            <th>Passenger</th>
+            <th>Origin city</th>
+            <th>Origin airport</th>
+            <th>Departure date</th>
+            <th>Destination city</th>
+            <th>Destination airport</th>
+            <th>Arrival date</th>
+            <th>Status</th>
+            {% for row in flights %}
+                <tr>
+                    <td>{{row['flight_num']}}</td>
+                    <td>{{row['first_name'] + ' ' + row['last_name']}}</td>
+                    <td>{{row['dept_city']}}</td>
+                    <td>{{row['dept_airport']}}</td>
+                    <td>{{row['dept_datetime']}}</td>
+                    <td>{{row['arrive_city']}}</td>
+                    <td>{{row['arrive_airport']}}</td>
+                    <td>{{row['arrive_datetime']}}</td>
+                    <td>{{row['status']}}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    
+    <br><br>
+    <p><a href="/home_staff">Back to homepage</a></p>
+
+</body>
+
+
+</html>
